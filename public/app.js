@@ -9,8 +9,7 @@ const TRIP = await fetch('data/trip.json').then((r) => r.json());
 // The weather is optional: a trip with no snapshot simply has no strip.
 const FORECAST = await fetch('data/forecast.json').then((r) => (r.ok ? r.json() : null)).catch(() => null);
 
-const TZ = TRIP.trip.timezone;
-const OFFSET = TRIP.trip.offset;
+const TZ = TRIP.trip.timezone;  // the default; a day or an event can have its own
 const LANG = TRIP.trip.language?.code ?? '';
 const LOCALE = TRIP.trip.locale ?? 'en-GB';
 
@@ -52,7 +51,8 @@ const UI = {
   outlook: 'outlook',
   humidity: 'Humidity {value}%',
   upAt: '🧥 Up at {place}, {m} m: about {hi}° / {lo}°',
-  timesNote: 'All times are trip-local: {timezone}, UTC{offset}. Works offline once loaded.',
+  timesNote: 'All times are local: {zone}. Works offline once loaded.',
+  timesNoteZones: 'Times are local to where each thing happens. Works offline once loaded.',
   weatherNote: 'Weather is a snapshot taken {date} by Open-Meteo.',
   updateTitle: 'Trip update ready',
   updateText: 'New plan details are downloaded. Tap Update to see them.',
@@ -81,23 +81,71 @@ const say = (key, vars = {}) => UI[key].replace(/\{(\w+)\}/g, (m, k) => vars[k] 
 
 /* ── the data, as the app reads it ───────────────────────────────────────── */
 
-// Local times get the trip's offset, so each is an instant whatever zone the phone is
-// in. A time written with its own offset keeps it.
-const instant = (t) => (t && !/(z|[+-]\d\d:\d\d)$/i.test(t) ? `${t}${OFFSET}` : t);
+/*
+ * Time zones. Every time in trip.json is a wall-clock time where it happens — 09:00 in
+ * Bangkok is written 09:00 — and its zone is the event's, else its day's, else the trip's.
+ * The browser's own zone data turns it into an instant, daylight saving included, and
+ * every time on the page is shown in the zone it happens in, whatever the phone says.
+ */
+const fmtCache = new Map();
+/** One Intl formatter per kind and zone, made once. */
+function fmt(kind, tz) {
+  const key = `${kind}|${tz}`;
+  if (!fmtCache.has(key)) {
+    const opts = {
+      time: [LOCALE, { hour: '2-digit', minute: '2-digit', hour12: false }],
+      full: [LOCALE, { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', hour12: false }],
+      date: ['en-CA', {}],                                    // YYYY-MM-DD
+      offset: ['en-US', { timeZoneName: 'longOffset' }],      // GMT+09:00
+      zone: [LOCALE, { timeZoneName: 'shortOffset' }],        // GMT+9
+    }[kind];
+    fmtCache.set(key, new Intl.DateTimeFormat(opts[0], { ...opts[1], timeZone: tz }));
+  }
+  return fmtCache.get(key);
+}
+const part = (kind, tz, ms) => fmt(kind, tz).formatToParts(ms).find((p) => p.type === 'timeZoneName')?.value ?? '';
+
+/** The zone's offset from UTC at that instant, in minutes. */
+function offsetMinutes(tz, ms) {
+  const m = part('offset', tz, ms).match(/([+-])(\d\d):?(\d\d)?/);
+  return m ? (m[1] === '-' ? -1 : 1) * (Number(m[2]) * 60 + Number(m[3] ?? 0)) : 0;
+}
+
+/** A wall-clock time in a zone, as an instant (ms). A time written with an offset keeps it. */
+function zoned(local, tz) {
+  if (/(z|[+-]\d\d:?\d\d)$/i.test(local)) return Date.parse(local);
+  const asUtc = Date.parse(`${local.length === 16 ? `${local}:00` : local}Z`);
+  // The offset depends on the instant, which depends on the offset: two passes settle it,
+  // including on the day the clocks change.
+  let ms = asUtc - offsetMinutes(tz, asUtc) * 60000;
+  ms = asUtc - offsetMinutes(tz, ms) * 60000;
+  return ms;
+}
+const iso = (ms) => new Date(ms).toISOString();
 
 // en-GB writes September as "Sept"; everything else on the page says "Sep".
 const sep = (s) => s.replace('Sept', 'Sep');
 const fmtLabel = new Intl.DateTimeFormat(LOCALE, { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' });
 const dayLabel = (date) => sep(fmtLabel.format(new Date(`${date}T12:00:00Z`)).replace(',', ''));
 
-const DAYS = TRIP.days.map((d, i) => ({ ...d, n: i + 1, label: dayLabel(d.date) }));
-const EVENTS = DAYS.flatMap((d) => d.events.map((e, i) => ({
-  ...e,
-  id: e.id ?? `d${d.n}-${i + 1}`,
-  day: d.n,
-  start: instant(e.start),
-  end: instant(e.end),
-})));
+const DAYS = TRIP.days.map((d, i) => ({ ...d, n: i + 1, label: dayLabel(d.date), tz: d.timezone ?? TZ }));
+const EVENTS = DAYS.flatMap((d) => d.events.map((e, i) => {
+  const tz = e.timezone ?? d.tz;
+  // A flight ends somewhere else: its arrival is read, and shown, in the zone it lands in.
+  const endTz = e.endTimezone ?? tz;
+  return {
+    ...e,
+    id: e.id ?? `d${d.n}-${i + 1}`,
+    day: d.n,
+    tz,
+    endTz,
+    start: iso(zoned(e.start, tz)),
+    end: e.end ? iso(zoned(e.end, endTz)) : undefined,
+  };
+}));
+/** Every zone the trip passes through. One zone, and no time needs a label. */
+const ZONES = new Set(EVENTS.flatMap((e) => [e.tz, e.endTz]));
+const zoneLabel = (tz, ms) => part('zone', tz, ms);
 
 /* ── time ────────────────────────────────────────────────────────────────── */
 
@@ -107,9 +155,9 @@ function parseNowParam(raw) {
   if (!raw) return null;
   // A literal '+' decodes to a space in a query string — put it back.
   let s = raw.trim().replace(/\s(?=\d{2}:?\d{2}$)/, '+');
-  // No offset supplied? Assume trip-local time rather than the browser's zone.
-  if (!/(z|[+-]\d{2}:?\d{2})$/i.test(s)) s += OFFSET;
-  const t = Date.parse(s);
+  // No offset supplied? It's the local time of that day of the trip, not the browser's.
+  const tz = DAYS.find((d) => d.date === s.slice(0, 10))?.tz ?? DAYS[0].tz;
+  const t = /^\d{4}-\d\d-\d\dT\d\d:\d\d/.test(s) ? zoned(s, tz) : Date.parse(s);
   return Number.isNaN(t) ? null : t;
 }
 
@@ -118,20 +166,15 @@ const skew = override ? override - Date.now() : 0;
 const now = () => new Date(Date.now() + skew);
 
 const at = (e) => new Date(e.start).getTime();
-const isoDate = new Intl.DateTimeFormat('en-CA', { timeZone: TZ });  // YYYY-MM-DD
 
-/** Which trip day the calendar says it is.
+/** Which trip day the calendar says it is, each day by its own zone's calendar.
  *  Not the focused event's day: multi-night hotel stays span days, so at 09:00 on
  *  the 29th the "current" event is still the hotel checked into on the 28th. */
 function dayOn(t) {
-  const today = isoDate.format(t);
-  return DAYS.find((d) => d.date === today) ?? null;
+  return DAYS.findLast((d) => fmt('date', d.tz).format(t) === d.date) ?? null;
 }
 const until = (e) => (e.end ? new Date(e.end).getTime() : at(e));
 
-// Always render trip-local time, whatever the phone's timezone is set to.
-const fmtTime = new Intl.DateTimeFormat(LOCALE, { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: TZ });
-const fmtFull = new Intl.DateTimeFormat(LOCALE, { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', hour12: false, timeZone: TZ });
 const fmtDay = new Intl.DateTimeFormat(LOCALE, { day: 'numeric', month: 'short', timeZone: 'UTC' });
 
 // Whole minutes, rounded up, so "in 1m" holds until the moment itself.
@@ -344,13 +387,19 @@ function renderChrome() {
   mark.append(y);
 
   // To the day the trip actually ends: a midnight flight home lands on the day after.
-  const lastDate = isoDate.format(Math.max(...EVENTS.map(until)));
+  const lastEnd = EVENTS.reduce((a, e) => (until(e) > until(a) ? e : a));
+  const lastDate = fmt('date', lastEnd.endTz).format(until(lastEnd));
   const range = `${sep(fmtDay.format(new Date(`${first.date}T12:00:00Z`)))} – ${sep(fmtDay.format(new Date(`${lastDate}T12:00:00Z`)))} ${year}`;
   // A wordmark in capitals reads as a name in the footer: TRIPLINE → Tripline.
   const word = pieces.join('');
   const name = word === word.toUpperCase() ? word[0] + word.slice(1).toLowerCase() : word;
   $('#footTrip').replaceChildren(...(t.brand ? [el('strong', null, name), ` · ${t.title}`] : [el('strong', null, t.title)]), ` · ${range}`);
-  $('#footTz').textContent = say('timesNote', { timezone: TZ, offset: OFFSET });
+  // One zone: name it, and its offset if the clocks don't change during the trip.
+  const [only] = ZONES;
+  const offsets = new Set([zoneLabel(only, at(EVENTS[0])), zoneLabel(only, until(lastEnd))]);
+  $('#footTz').textContent = ZONES.size > 1
+    ? UI.timesNoteZones
+    : say('timesNote', { zone: offsets.size === 1 ? `${only}, ${[...offsets][0]}` : only });
 }
 
 /* ── render the timeline ─────────────────────────────────────────────────── */
@@ -400,6 +449,12 @@ function wxStrip(day) {
   return wrap;
 }
 
+/** An event's time on the timeline; with its zone when that isn't its day's. */
+function evTime(e) {
+  const t = fmt('time', e.tz).format(at(e));
+  return e.tz === DAYS[e.day - 1].tz ? t : `${t} ${zoneLabel(e.tz, at(e))}`;
+}
+
 function buildTimeline() {
   const frag = document.createDocumentFragment();
 
@@ -415,6 +470,12 @@ function buildTimeline() {
     head.append(el('span', 'day-n', String(day.n)));
     const meta = el('div', 'day-meta');
     meta.append(el('span', 'day-date', day.label), el('span', 'day-title', day.title));
+    // A trip across zones says where the clock changes: on the first day, and on each day
+    // whose zone isn't the day before's.
+    const before = DAYS[day.n - 2];
+    if (ZONES.size > 1 && (!before || before.tz !== day.tz)) {
+      meta.querySelector('.day-date').append(el('span', 'day-tz', zoneLabel(day.tz, zoned(`${day.date}T12:00`, day.tz))));
+    }
     head.append(meta);
     if (day.local) head.append(localEl('span', 'day-local', day.local));
     section.append(head);
@@ -436,7 +497,7 @@ function buildTimeline() {
         card.type = 'button';
 
         const top = el('div', 'ev-top');
-        top.append(el('span', 'ev-time', fmtTime.format(at(e))));
+        top.append(el('span', 'ev-time', evTime(e)));
         if (e.qr?.length) top.append(el('span', 'tag', `QR ×${e.qr.length}`));
         if (e.driver) top.append(el('span', 'tag', TRIP.trip.language?.name ?? 'Local'));
         if (e.warnings?.length) top.append(el('span', 'tag warn', '!'));
@@ -449,7 +510,7 @@ function buildTimeline() {
       } else {
         const row = el('div', 'ev-plain');
         const line = el('div');
-        line.append(el('span', 'ev-time', fmtTime.format(at(e))), el('span', 'ev-title', e.title));
+        line.append(el('span', 'ev-time', evTime(e)), el('span', 'ev-title', e.title));
         row.append(line);
         if (e.summary) row.append(el('span', 'ev-sub', e.summary));
         li.append(row);
@@ -539,7 +600,7 @@ function tick() {
   const wrap = mode === 'done' ? wrapUp() : null;
   ui.icon.textContent = wrap ? '🎒' : (ICON[ev.type] ?? '•');
   ui.title.textContent = wrap ? wrap.title : ev.title;
-  ui.sub.textContent = wrap ? (wrap.sub ?? '') : (ev.summary || ev.place?.local || fmtFull.format(at(ev)));
+  ui.sub.textContent = wrap ? (wrap.sub ?? '') : (ev.summary || ev.place?.local || sep(fmt('full', ev.tz).format(at(ev))));
   ui.time.textContent = timeText;
   ui.progress.style.width = `${progress * 100}%`;
   statusEl.style.setProperty('--progress', progress);
@@ -593,11 +654,15 @@ const sheet = $('#sheet');
 const sheetBody = $('#sheetBody');
 
 function when(e) {
-  const a = sep(fmtFull.format(at(e)));
+  const a = sep(fmt('full', e.tz).format(at(e)));
   if (!e.end) return a;
-  // Same day in trip time — the phone's own zone would split a stay at its midnight.
-  const sameDay = isoDate.format(at(e)) === isoDate.format(until(e));
-  return `${a} → ${sameDay ? fmtTime.format(until(e)) : sep(fmtFull.format(until(e)))}`;
+  // Crossing zones, each end says which: 10:05 GMT+9 → 14:20 GMT+7.
+  if (e.endTz !== e.tz) {
+    return `${a} ${zoneLabel(e.tz, at(e))} → ${sep(fmt('full', e.endTz).format(until(e)))} ${zoneLabel(e.endTz, until(e))}`;
+  }
+  // Same day where it happens — the phone's own zone would split a stay at its midnight.
+  const sameDay = fmt('date', e.tz).format(at(e)) === fmt('date', e.tz).format(until(e));
+  return `${a} → ${sameDay ? fmt('time', e.tz).format(until(e)) : sep(fmt('full', e.tz).format(until(e)))}`;
 }
 
 /**

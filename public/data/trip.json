@@ -4,7 +4,6 @@
     "title": "Kansai in spring",
     "brand": ["KAN", "SAI"],
     "timezone": "Asia/Tokyo",
-    "offset": "+09:00",
     "locale": "en-GB",
     "language": { "code": "ja", "name": "Japanese" },
     "shared": false

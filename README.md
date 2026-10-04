@@ -47,6 +47,8 @@ reads your bookings and builds the trip. [`AGENTS.md`](AGENTS.md) teaches it how
 - **Weather.** It takes a baked-in forecast for each day, with an altitude correction for summit
   days.
 - **Any language.** The app's own words and date formats can be changed per trip.
+- **Across time zones.** Each day, or a single flight, can be in its own zone. Every time reads
+  as the local clock does there, daylight saving included.
 - **Shareable.** `"shared": true` makes the checks refuse anything personal before you send the
   link to family.
 

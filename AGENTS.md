@@ -41,8 +41,13 @@ step. They give you their bookings; you turn them into data. This file is everyt
   platform or an address. A field you can't fill stays out.
 - **Never attribute what the source doesn't.** If two tickets don't say whose is whose, the
   page says "present both", not a guess.
-- **Times are trip-local**, written without an offset (`2027-04-08T09:46`); `trip.offset` is
-  added. An event with its own offset (a flight from another time zone) writes it explicitly.
+- **Times are what the local clock says where it happens** (`2027-04-08T09:46`), with no
+  offset. The zone is the event's `timezone`, else its day's, else the trip's — all IANA
+  names (`Asia/Bangkok`), never "+07:00", so daylight saving is handled for you. Give a day
+  its own `timezone` when the trip moves to another zone, an event its own when it starts
+  somewhere else than its day, and a flight that lands in another zone an `endTimezone`, with
+  `end` the arrival time printed on the ticket. Tickets print both ends in local time: copy
+  them as they are, don't convert.
 - **Each event sits under its own day**, in time order. One that starts in the small hours
   (before 06:00) may stay with the day before — a 00:30 check-in, a midnight flight.
 - **`local` is what the signs say:** the destination's own language and script, checked

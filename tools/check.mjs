@@ -175,11 +175,39 @@ if (trip && schema) {
 
 // 4b. What a schema can't say. Each of these fails silently in the app: an event out of
 //     order or with a duplicate id breaks "now" and "up next", one filed under the wrong
-//     day draws there, and an icon that isn't there is a broken image.
+//     day draws there, a misspelt zone throws, and an icon that isn't there is a broken
+//     image. Times are read exactly as app.js reads them: local, in the event's, day's or
+//     trip's zone.
 if (trip?.days) {
-  const offset = trip.trip?.offset ?? '';
-  const instant = (t) => Date.parse(/(z|[+-]\d\d:\d\d)$/i.test(t) ? t : `${t}${offset}`);
   const bad = [];
+  const validZone = (tz) => { try { new Intl.DateTimeFormat('en', { timeZone: tz }); return true; } catch { return false; } };
+  const offsetMin = (tz, ms) => {
+    const name = new Intl.DateTimeFormat('en-US', { timeZone: tz, timeZoneName: 'longOffset' })
+      .formatToParts(ms).find((p) => p.type === 'timeZoneName')?.value ?? '';
+    const m = name.match(/([+-])(\d\d):?(\d\d)?/);
+    return m ? (m[1] === '-' ? -1 : 1) * (Number(m[2]) * 60 + Number(m[3] ?? 0)) : 0;
+  };
+  const zoned = (local, tz) => {
+    if (/(z|[+-]\d\d:?\d\d)$/i.test(local)) return Date.parse(local);
+    const asUtc = Date.parse(`${local.length === 16 ? `${local}:00` : local}Z`);
+    let ms = asUtc - offsetMin(tz, asUtc) * 60000;
+    ms = asUtc - offsetMin(tz, ms) * 60000;
+    return ms;
+  };
+  // A local time that doesn't exist: the hour the clocks skip in spring.
+  const skipped = (local, tz) => {
+    if (/(z|[+-]\d\d:?\d\d)$/i.test(local) || !validZone(tz)) return false;
+    const back = new Intl.DateTimeFormat('sv-SE', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })
+      .format(zoned(local, tz)).replace(' ', 'T');
+    return back !== local.slice(0, 16);
+  };
+  const tripTz = trip.trip?.timezone;
+  for (const [where, tz] of [['trip.timezone', tripTz], ...trip.days.flatMap((d, di) => [
+    [`day ${di + 1} timezone`, d.timezone],
+    ...(d.events ?? []).flatMap((e, i) => [[`${e.id ?? `d${di + 1}-${i + 1}`} timezone`, e.timezone], [`${e.id ?? `d${di + 1}-${i + 1}`} endTimezone`, e.endTimezone]]),
+  ])]) {
+    if (tz != null && !validZone(tz)) bad.push(`${where} "${tz}" is not a time zone — use an IANA name like "Europe/Madrid" or "Asia/Bangkok"`);
+  }
   const ids = new Set();
   let prev = null;
   trip.days.forEach((d, di) => {
@@ -188,19 +216,26 @@ if (trip?.days) {
     // An event belongs to its day, or to the small hours after it: a late check-in, a
     // midnight flight.
     const next = new Date(Date.parse(`${d.date}T12:00:00Z`) + 864e5).toISOString().slice(0, 10);
+    const dayTz = d.timezone ?? tripTz;
     (d.events ?? []).forEach((e, i) => {
       const id = e.id ?? `d${di + 1}-${i + 1}`;
+      const tz = e.timezone ?? dayTz, endTz = e.endTimezone ?? tz;
+      const instant = (t, z = tz) => (validZone(z) ? zoned(t, z) : NaN);
       if (ids.has(id)) bad.push(`${id}: duplicate id`);
       ids.add(id);
+      // A misspelt zone is reported once, above; its times can't be read until it's fixed.
+      if (!validZone(tz) || !validZone(endTz)) { prev = null; return; }
       if (Number.isNaN(instant(e.start))) bad.push(`${id}: start '${e.start}' is not a time`);
-      if (prev && instant(e.start) < instant(prev.e.start)) bad.push(`${id}: starts before ${prev.id} above it`);
-      if (e.end && instant(e.end) < instant(e.start)) bad.push(`${id}: ends before it starts`);
+      if (prev && instant(e.start) < instant(prev.e.start, prev.tz)) bad.push(`${id}: starts before ${prev.id} above it`);
+      if (e.end && instant(e.end, endTz) < instant(e.start)) bad.push(`${id}: ends before it starts${endTz !== tz ? ` (start read in ${tz}, end in ${endTz})` : ''}`);
+      if (skipped(e.start, tz)) bad.push(`${id}: ${e.start} doesn't exist in ${tz} — the clocks skip that hour`);
+      if (e.end && skipped(e.end, endTz)) bad.push(`${id}: ${e.end} doesn't exist in ${endTz} — the clocks skip that hour`);
       const date = String(e.start).slice(0, 10);
       if (date !== d.date && !(date === next && e.start.slice(11, 13) < '06')) bad.push(`${id}: starts ${date}, but it is filed under ${d.date}`);
       for (const l of e.links ?? []) {
         if (/^[a-z0-9-]+$/.test(l.icon) && !existsSync(`public/assets/icons/${l.icon}.svg`)) bad.push(`${id}: no icon '${l.icon}' in assets/icons`);
       }
-      prev = { e, id };
+      prev = { e, id, tz };
     });
   });
   for (const l of trip.links ?? []) {
@@ -212,7 +247,7 @@ if (trip?.days) {
     if (stray.length) bad.push(`forecast.json has days the trip doesn't: ${stray.join(', ')} — re-run tools/forecast.mjs`);
   }
   bad.length ? fail.push(`trip data: ${bad.join('; ')}`)
-             : ok.push('events unique, in time order, on their own day, and every icon exists');
+             : ok.push('events unique, in time order, on their own day, in real time zones, and every icon exists');
 }
 
 // 4c. A shared trip carries nothing personal. The site is public, so "shared": true in

@@ -323,6 +323,12 @@
   .day-meta { min-width: 0; line-height: 1.25; }
   .day-date { font-size: 1.02rem; font-weight: 800; letter-spacing: -.015em; }
   .day-title { display: block; font-size: .82rem; color: var(--muted); }
+  /* Where the clock changes: "GMT+7" beside the date. */
+  .day-tz {
+    margin-left: 8px; padding: 1px 7px; border-radius: 99px; vertical-align: 2px;
+    font-size: .68rem; font-weight: 750; letter-spacing: 0;
+    color: var(--accent); background: color-mix(in srgb, var(--accent) 13%, transparent);
+  }
   .day-local {
     margin-left: auto; flex: none;
     font-size: 1.05rem; font-weight: 750;

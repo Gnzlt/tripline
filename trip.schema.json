@@ -16,8 +16,7 @@
       "type": "object",
       "required": [
         "title",
-        "timezone",
-        "offset"
+        "timezone"
       ],
       "additionalProperties": false,
       "properties": {
@@ -41,12 +40,7 @@
         "timezone": {
           "type": "string",
           "minLength": 1,
-          "description": "IANA zone every time is shown in, e.g. \"Asia/Shanghai\"."
-        },
-        "offset": {
-          "type": "string",
-          "pattern": "^[+-]\\d\\d:\\d\\d$",
-          "description": "UTC offset added to every local time below, e.g. \"+08:00\"."
+          "description": "IANA zone the trip happens in, e.g. \"Asia/Tokyo\". A day or an event in another zone sets its own `timezone`."
         },
         "locale": {
           "type": "string",
@@ -234,7 +228,11 @@
         },
         "timesNote": {
           "type": "string",
-          "description": "Default: \"All times are trip-local: {timezone}, UTC{offset}. Works offline once loaded.\""
+          "description": "Default: \"All times are local: {zone}. Works offline once loaded.\""
+        },
+        "timesNoteZones": {
+          "type": "string",
+          "description": "Default: \"Times are local to where each thing happens. Works offline once loaded.\""
         },
         "weatherNote": {
           "type": "string",
@@ -352,6 +350,11 @@
             "type": "string",
             "pattern": "^\\d{4}-\\d\\d-\\d\\d$"
           },
+          "timezone": {
+            "type": "string",
+            "minLength": 1,
+            "description": "IANA zone this day happens in, when it isn't the trip's, e.g. \"Asia/Bangkok\". Its events inherit it."
+          },
           "title": {
             "type": "string",
             "minLength": 1
@@ -421,7 +424,7 @@
     "time": {
       "type": "string",
       "pattern": "^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d(:\\d\\d)?([+-]\\d\\d:\\d\\d)?$",
-      "description": "Local time, e.g. \"2026-09-26T08:03\". The trip's offset is added unless one is written."
+      "description": "The local time where it happens, e.g. \"2027-04-08T09:46\" — the zone comes from the event, its day or the trip, daylight saving included. An explicit offset (\"…+07:00\") is allowed but rarely needed."
     },
     "place": {
       "type": "object",
@@ -530,6 +533,16 @@
         "end": {
           "$ref": "#/$defs/time",
           "description": "Omit for a moment rather than a span."
+        },
+        "timezone": {
+          "type": "string",
+          "minLength": 1,
+          "description": "IANA zone this event starts in, when it isn't its day's."
+        },
+        "endTimezone": {
+          "type": "string",
+          "minLength": 1,
+          "description": "IANA zone this event ends in, when it isn't where it starts: a flight lands in another zone. Its `end` is the local time there."
         },
         "title": {
           "type": "string",

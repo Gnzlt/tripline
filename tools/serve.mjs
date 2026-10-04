@@ -6,7 +6,7 @@
  *
  * Serves public/ the way Firebase Hosting does (clean URLs, nothing cached), so what
  * works here works there. Add ?now=2027-04-09T07:00 to the URL to see the trip at any
- * moment; a time with no offset is trip-local.
+ * moment; a time with no offset is that day's local time.
  */
 import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';

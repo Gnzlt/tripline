@@ -25,6 +25,8 @@ const DAILY = 'weather_code,temperature_2m_max,temperature_2m_min,' +
 
 const TRIP = JSON.parse(readFileSync(new URL('../public/data/trip.json', import.meta.url), 'utf8'));
 const TZ = TRIP.trip.timezone;
+// Each day is forecast in its own zone, so "the day" means that place's day.
+const zoneOf = (d) => d.timezone ?? TZ;
 
 /** WMO weather codes → what to show. */
 const WMO = {
@@ -49,10 +51,10 @@ const DAYS = TRIP.days.filter((d) => d.weather && inRange(d));
 const skipped = TRIP.days.filter((d) => d.weather && !inRange(d)).map((d) => d.date);
 const first = DAYS[0]?.date, last = DAYS.at(-1)?.date;
 
-async function get(place, model) {
+async function get(place, tz, model) {
   const q = new URLSearchParams({
     latitude: place.lat, longitude: place.lng, daily: DAILY,
-    timezone: TZ, start_date: first, end_date: last,
+    timezone: tz, start_date: first, end_date: last,
   });
   if (model) q.set('models', model);
   const r = await fetch(`${API}?${q}`);
@@ -61,11 +63,11 @@ async function get(place, model) {
 }
 
 // One fetch per place, however many days are spent there.
-const key = (w) => `${w.lat},${w.lng}`;
-const places = new Map(DAYS.map((d) => [key(d.weather), d.weather]));
+const key = (d) => `${d.weather.lat},${d.weather.lng},${zoneOf(d)}`;
+const places = new Map(DAYS.map((d) => [key(d), { ...d.weather, tz: zoneOf(d) }]));
 const data = {};
 for (const [k, place] of places) {
-  const [blend, ecmwf, gfs] = await Promise.all([get(place), get(place, 'ecmwf_ifs025'), get(place, 'gfs_seamless')]);
+  const [blend, ecmwf, gfs] = await Promise.all([get(place, place.tz), get(place, place.tz, 'ecmwf_ifs025'), get(place, place.tz, 'gfs_seamless')]);
   data[k] = { blend: blend.daily, elevation: blend.elevation, ecmwf: ecmwf.daily, gfs: gfs.daily };
   process.stdout.write(`  ${place.name} · grid elevation ${blend.elevation} m\n`);
 }
@@ -77,7 +79,7 @@ const stamp = new Intl.DateTimeFormat('en-CA', {
 
 const out = [];
 for (const day of DAYS) {
-  const src = data[key(day.weather)];
+  const src = data[key(day)];
   const i = src.blend.time.indexOf(day.date);
   if (i < 0) throw new Error(`no forecast row for ${day.date}`);
 
@@ -85,7 +87,7 @@ for (const day of DAYS) {
   const hiA = pick(src.ecmwf, 'temperature_2m_max');
   const hiB = pick(src.gfs, 'temperature_2m_max');
   const spread = (hiA != null && hiB != null) ? Math.abs(hiA - hiB) : 99;
-  const lead = Math.round((Date.parse(`${day.date}T12:00${TRIP.trip.offset}`) - issued) / 86400e3);
+  const lead = Math.round((Date.parse(`${day.date}T12:00:00Z`) - issued) / 86400e3);
 
   const code = src.blend.weather_code[i];
   const [icon, en] = WMO[code] ?? ['🌡', 'Mixed'];
