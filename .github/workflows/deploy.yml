@@ -1,0 +1,67 @@
+name: Check and deploy
+
+# Every push and pull request runs the checks. A push to main also deploys to Firebase
+# Hosting — but only once the repo has a FIREBASE_SERVICE_ACCOUNT secret and a
+# .firebaserc (from `firebase use --add`). Until then the deploy is skipped, not failed,
+# so a fresh copy of this template stays green.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+      - run: node tools/check.mjs
+
+  deploy:
+    needs: check
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Ready to deploy?
+        id: ready
+        run: |
+          if [ -z "$FIREBASE_SERVICE_ACCOUNT" ] || [ ! -f .firebaserc ]; then
+            echo "::notice::Deploy skipped: set the FIREBASE_SERVICE_ACCOUNT secret and commit .firebaserc (see README) to deploy on push."
+            echo "go=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "go=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/setup-node@v7
+        if: steps.ready.outputs.go == 'true'
+        with:
+          node-version: '24'
+
+      # Stamp the service worker and the footer with this commit, so every deploy is a new
+      # version: phones notice it and offer the update.
+      - name: Stamp build id
+        if: steps.ready.outputs.go == 'true'
+        run: |
+          BUILD="${GITHUB_SHA::7}"
+          sed -i "s/tripline-v[0-9]*/tripline-${BUILD}/" public/sw.js
+          sed -i "s/__BUILD__/${BUILD}/" public/index.html
+
+      - name: Deploy
+        if: steps.ready.outputs.go == 'true'
+        run: |
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/sa.json"
+          export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json"
+          npx --yes firebase-tools@15 deploy --only hosting --non-interactive
