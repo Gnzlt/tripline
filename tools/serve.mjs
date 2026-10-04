@@ -32,7 +32,7 @@ createServer(async (req, res) => {
   const candidates = path.endsWith('/') ? [join(path, 'index.html')] : [path, `${path}.html`];
   for (const c of candidates) {
     const file = join(ROOT, c);
-    if (!file.startsWith(ROOT) || !(await isFile(file))) continue;
+    if (!file.startsWith(ROOT) || /[/\\]_(headers|redirects)$/.test(file) || !(await isFile(file))) continue;
     res.writeHead(200, {
       'Content-Type': TYPES[extname(file).toLowerCase()] ?? 'application/octet-stream',
       'Cache-Control': 'no-cache',

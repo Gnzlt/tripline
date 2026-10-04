@@ -136,13 +136,27 @@ trip.schema.json        every field, described
 tools/check.mjs         run until it passes
 tools/serve.mjs         local preview (?now= to time-travel)
 public/app.js, sw.js, styles.css, index.html   the engine
+firebase.json, wrangler.jsonc, public/_headers   hosting: Firebase or Cloudflare
 ```
 
 ## Hosting
 
-Any static host serves `public/`. Firebase Hosting is the suggested one (free tier, fast, and
-`firebase.json` is ready): `npm i -g firebase-tools`, `firebase login`, `firebase use --add`,
-`firebase deploy --only hosting`. To deploy on every push, add a `FIREBASE_SERVICE_ACCOUNT`
-repo secret (a service-account key) and commit `.firebaserc`; `.github/workflows/deploy.yml`
-does the rest and skips quietly without them. Other hosts: point them at `public/`, no build
-command. All of this is the person's call — ask before doing any of it.
+Publishing is the person's call: ask before any of it. Any static host serves `public/` with
+no build step. Two are set up; offer both and let them choose:
+
+- **Firebase Hosting** (`firebase.json`): the suggested one. The person needs a Google account;
+  then `npx firebase-tools login` (in their browser), `firebase use --add` to pick or create a
+  project, and `firebase deploy --only hosting`. The address is `<project>.web.app`.
+- **Cloudflare** (`wrangler.jsonc`, headers in `public/_headers`): the quickest, with no
+  account to start. Set `name` in `wrangler.jsonc` to a short slug of the trip (lowercase,
+  digits and dashes); it becomes `<name>.<account>.workers.dev`. Then
+  `npx wrangler deploy --temporary`. It publishes at once and prints the site's address and a
+  **claim link** (it may ask the person to accept Cloudflare's terms first). Give them both
+  and say plainly: open the claim link within 60 minutes and sign up or in, or the site is
+  deleted. The claim link is like a password: only to them. Later deploys:
+  `npx wrangler login` once, then `npx wrangler deploy`.
+
+To deploy on every push, `.github/workflows/deploy.yml` needs `FIREBASE_SERVICE_ACCOUNT` (and a
+committed `.firebaserc`), or `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`, as repo
+secrets; without them it only runs the checks. Keep `firebase.json` and `public/_headers` in
+step: both set no-cache on the page and the service worker, and `noindex` everywhere.

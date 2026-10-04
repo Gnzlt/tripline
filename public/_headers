@@ -1,0 +1,10 @@
+# Cloudflare's response headers, the same rules as firebase.json. Not served itself.
+# The page and the service worker are always revalidated, so phones see a new deploy.
+/
+  Cache-Control: no-cache
+/sw.js
+  Cache-Control: no-cache
+/*
+  X-Robots-Tag: noindex, nofollow
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer

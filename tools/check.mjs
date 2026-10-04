@@ -107,7 +107,8 @@ const precached = [...assets, ...tripFiles];
 const walk = (dir) => readdirSync(dir, { withFileTypes: true })
   .filter((d) => !d.name.startsWith('.'))
   .flatMap((d) => (d.isDirectory() ? walk(`${dir}/${d.name}`) : [`${dir}/${d.name}`]));
-const shipped = walk('public').map((f) => f.slice('public/'.length));
+// _headers and _redirects are host config (Cloudflare reads them), not files the app serves.
+const shipped = walk('public').map((f) => f.slice('public/'.length)).filter((f) => !/^_(headers|redirects)$/.test(f));
 const precache = [];
 if (!assets.includes('./')) precache.push("the shell './' is not precached");
 const html = precached.filter((a) => a.endsWith('.html'));
@@ -305,6 +306,19 @@ if (trip?.trip?.shared) {
   if (!/serviceWorker\.register\(/.test(src)) bad.push('app.js no longer registers the service worker');
   bad.length ? fail.push(`not installable as an app: ${bad.join('; ')}`)
              : ok.push(`installable: "${m.name}" on the home screen as "${m.short_name}"`);
+}
+
+// 4e. Cloudflare's config, when there is one: its name is the site's address, and it must
+//     serve public/ as it is.
+if (existsSync('wrangler.jsonc')) {
+  const bad = [];
+  let w = null;
+  try { w = JSON.parse(readFileSync('wrangler.jsonc', 'utf8').replace(/^\s*\/\/[^\n]*$/gm, '')); } catch (e) { bad.push(`wrangler.jsonc does not parse: ${e.message}`); }
+  if (w) {
+    if (!/^[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$/.test(w.name ?? '')) bad.push(`wrangler.jsonc name "${w.name}" must be lowercase letters, digits and dashes — it becomes the address`);
+    if (!/^(\.\/)?public\/?$/.test(w.assets?.directory ?? '')) bad.push('wrangler.jsonc assets.directory must be "./public"');
+  }
+  bad.length ? fail.push(`Cloudflare config: ${bad.join('; ')}`) : ok.push(`Cloudflare config: deploys public/ as "${w.name}"`);
 }
 
 // 5. The CI stamp targets must still exist, or deploys silently stop busting caches

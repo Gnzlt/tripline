@@ -4,7 +4,9 @@
     "cleanUrls": true,
     "trailingSlash": false,
     "ignore": [
-      "**/.*"
+      "**/.*",
+      "_headers",
+      "_redirects"
     ],
     "headers": [
       {
