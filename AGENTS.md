@@ -116,6 +116,11 @@ public, removing it from the latest version is not enough — tell the person.
 - **Weather is hedged:** a day too far out, or where the ECMWF and GFS models disagree by more
   than 3.5 °C, is labelled an outlook. Keep that; don't make the page look more certain than
   the forecast is.
+- **Add to calendar** (footer) builds an `.ics` of the trip on the phone, every time in UTC
+  so it's exact in any zone, each entry with a stable UID so a re-import updates it. Flights,
+  trains, hotels, tickets and sights go in by default; an event's `calendar: true/false`
+  overrides that — put in what the person would want in their calendar, leave out the
+  "walk to the station" steps.
 - **The app's words** are the `UI` table in `app.js`; a trip overrides them in `ui` (and date
   formats with `trip.locale`) to put the whole page in the traveller's language.
 

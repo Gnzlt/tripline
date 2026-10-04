@@ -65,6 +65,7 @@ const UI = {
   installOther: 'Open your browser menu and choose “Install app” or “Add to Home screen”.',
   install: 'Install',
   installFoot: '📲 Install as an app',
+  calendar: '📅 Add to calendar',
   notNow: 'Not now',
   checking: 'checking…',
   updateReady: 'update ready',
@@ -366,7 +367,8 @@ function renderChrome() {
   // The words in index.html, in the trip's language.
   for (const [id, key] of [['skip', 'skip'], ['statusTitle', 'loading'], ['updateTitle', 'updateTitle'],
     ['updateText', 'updateText'], ['updateGo', 'update'], ['updateLater', 'later'], ['jumpLabel', 'jumpNow'],
-    ['installTitle', 'installTitle'], ['installGo', 'install'], ['installLater', 'notNow'], ['installFoot', 'installFoot']]) {
+    ['installTitle', 'installTitle'], ['installGo', 'install'], ['installLater', 'notNow'], ['installFoot', 'installFoot'],
+    ['calendarFoot', 'calendar']]) {
     const n = document.getElementById(id);
     if (n) n.textContent = UI[key];
   }
@@ -1110,3 +1112,83 @@ function initInstall() {
 }
 
 initInstall();
+
+/* ── calendar export ─────────────────────────────────────────────────────── */
+
+/**
+ * The whole trip as one .ics file for the user's own calendar app, built on the phone
+ * from the data it already has, so it works with no signal and at any time.
+ *
+ * The events worth a calendar entry are the travel, the stays, the bookings and the
+ * sights; an event's `calendar` says otherwise when it should. Every time is written in
+ * UTC, which is exact wherever the trip goes: the calendar shows it in the phone's own
+ * zone. Each entry keeps a stable UID, so importing a newer file updates the trip
+ * instead of doubling it.
+ */
+const CALENDAR_TYPES = new Set(['flight', 'train', 'hotel', 'ticket', 'sight']);
+const inCalendar = (e) => e.calendar ?? CALENDAR_TYPES.has(e.type);
+
+/** A name fit for a file: "Kansai in spring" → "kansai-in-spring". */
+const slugify = (s) => s.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+  .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'trip';
+
+function buildIcs() {
+  const utc = (ms) => new Date(ms).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+  const text = (s) => String(s).replace(/\\/g, '\\\\').replace(/;/g, '\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
+  // A line longer than 75 bytes continues on the next, which starts with a space. Counted
+  // in bytes and cut between characters, so a Japanese or Chinese name stays whole.
+  const enc = new TextEncoder();
+  const fold = (line) => {
+    const out = [];
+    let cur = '';
+    for (const ch of line) {
+      if (enc.encode(cur + ch).length > (out.length ? 74 : 75)) { out.push(cur); cur = ''; }
+      cur += ch;
+    }
+    out.push(cur);
+    return out.join('\r\n ');
+  };
+  const uid = slugify(TRIP.trip.title);
+  const stamp = utc(Date.now());
+  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//tripline//trip calendar//EN', 'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH', `X-WR-CALNAME:${text(TRIP.trip.title)}`];
+  for (const e of EVENTS.filter(inCalendar)) {
+    const where = mapsTarget(e) ?? e.place ?? e.to;
+    const location = where ? [where.name, where.local].filter(Boolean).join(' · ') : '';
+    const description = [
+      e.summary,
+      ...(e.details ?? []).map((d) => `${d.label}: ${d.value}`),
+      ...(e.warnings ?? []).map((w) => `⚠️ ${w}`),
+      e.driver ? `${UI.showDriver}: ${e.driver.local}${e.driver.en ? ` (${e.driver.en})` : ''}` : null,
+      mapsTarget(e) ? mapsHref(mapsTarget(e)) : null,
+    ].filter(Boolean).join('\n');
+    // A moment with no end gets an hour, so it shows as a block rather than a sliver.
+    const end = e.end ? until(e) : at(e) + 3600e3;
+    lines.push('BEGIN:VEVENT', `UID:${e.id}@${uid}.tripline`, `DTSTAMP:${stamp}`,
+      `DTSTART:${utc(at(e))}`, `DTEND:${utc(end)}`, `SUMMARY:${text(e.title)}`);
+    if (location) lines.push(`LOCATION:${text(location)}`);
+    if (where?.geo) lines.push(`GEO:${where.geo[0]};${where.geo[1]}`);
+    if (description) lines.push(`DESCRIPTION:${text(description)}`);
+    if (e.place?.url) lines.push(`URL:${e.place.url}`);
+    lines.push('END:VEVENT');
+  }
+  lines.push('END:VCALENDAR');
+  return lines.map(fold).join('\r\n') + '\r\n';
+}
+
+function downloadCalendar() {
+  const blob = new Blob([buildIcs()], { type: 'text/calendar;charset=utf-8' });
+  const a = el('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${slugify(TRIP.trip.title)}.ics`;
+  document.body.append(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+}
+
+const calendarBtn = $('#calendarFoot');
+if (EVENTS.some(inCalendar)) {
+  calendarBtn.hidden = false;
+  calendarBtn.addEventListener('click', downloadCalendar);
+}

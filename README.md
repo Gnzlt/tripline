@@ -47,6 +47,9 @@ reads your bookings and builds the trip. [`AGENTS.md`](AGENTS.md) teaches it how
 - **Weather.** It takes a baked-in forecast for each day, with an altitude correction for summit
   days.
 - **Any language.** The app's own words and date formats can be changed per trip.
+- **Add to calendar.** One tap downloads the whole trip as an `.ics` file for Apple, Google or
+  Outlook calendar: flights, trains, stays, tickets and sights, with places and details. It
+  works offline, and importing a newer file updates the trip instead of duplicating it.
 - **Across time zones.** Each day, or a single flight, can be in its own zone. Every time reads
   as the local clock does there, daylight saving included.
 - **Shareable.** `"shared": true` makes the checks refuse anything personal before you send the

@@ -282,6 +282,10 @@
           "type": "string",
           "description": "Default: \"📲 Install as an app\""
         },
+        "calendar": {
+          "type": "string",
+          "description": "Default: \"📅 Add to calendar\""
+        },
         "notNow": {
           "type": "string",
           "description": "Default: \"Not now\""
@@ -554,6 +558,10 @@
         "pin": {
           "type": "boolean",
           "description": "Bold a plain row: a moment that matters but has nothing to open."
+        },
+        "calendar": {
+          "type": "boolean",
+          "description": "Include this event in the \"Add to calendar\" file (true) or leave it out (false). By default flights, trains, hotels, tickets and sights are in, the rest out."
         },
         "place": {
           "$ref": "#/$defs/place"
