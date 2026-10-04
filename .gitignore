@@ -6,9 +6,8 @@ bookings/*
 *.pdf
 *.eml
 
-# Firebase
-.firebase/
-firebase-debug.log
+# Cloudflare
+.wrangler/
 *.log
 
 # Editors and OS

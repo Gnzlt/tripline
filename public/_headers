@@ -1,4 +1,4 @@
-# Cloudflare's response headers, the same rules as firebase.json. Not served itself.
+# Response headers for Cloudflare (and any host that reads _headers). Not served itself.
 # The page and the service worker are always revalidated, so phones see a new deploy.
 /
   Cache-Control: no-cache

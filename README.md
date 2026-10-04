@@ -79,37 +79,28 @@ working with no signal.
 
 ## Hosting
 
-`public/` is a static site, so any static host works. Two are set up, both free:
+`public/` is a static site with no build step, so it runs on any static host.
 
-**[Firebase Hosting](https://firebase.google.com/docs/hosting)** is the suggested option. Its
-free tier is plenty, and `firebase.json` is ready:
-
-```sh
-npm install -g firebase-tools
-firebase login
-firebase use --add            # pick or create a project
-firebase deploy --only hosting
-```
-
-**[Cloudflare](https://developers.cloudflare.com/workers/static-assets/)** is the quickest
-start, with no account needed for the first deploy. Set `name` in `wrangler.jsonc` (it
-becomes the address), then:
+**[Cloudflare](https://developers.cloudflare.com/workers/static-assets/)** is the suggested
+one: free, and `wrangler.jsonc` is ready. Set its `name` to your trip (lowercase, digits and
+dashes): it becomes the address, `<name>.<your-account>.workers.dev`. Then:
 
 ```sh
 npx wrangler deploy --temporary
 ```
 
-The site is live straight away. Within 60 minutes, open the claim link it prints and sign up
-or in to keep it; unclaimed, it's deleted. Later deploys are `npx wrangler login` once, then
-`npx wrangler deploy`.
+The site is live straight away, with no account needed yet. Within 60 minutes, open the claim
+link it prints and sign up or log in to keep it; unclaimed, it's deleted. After that, deploy
+with `npx wrangler login` once, then `npx wrangler deploy`.
 
-**Deploy on every push:** for Firebase, add a `FIREBASE_SERVICE_ACCOUNT` repo secret (a
-service-account JSON key) and commit `.firebaserc`. For Cloudflare, add
-`CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` repo secrets. Until one is set up, the
-workflow only runs the checks.
+**Deploy on every push:** add `CLOUDFLARE_API_TOKEN` (an API token from the
+**Edit Cloudflare Workers** template) and `CLOUDFLARE_ACCOUNT_ID` as repo secrets. The workflow
+runs the checks, then deploys. Until the secrets are there, it only runs the checks.
 
-**Anywhere else** (GitHub Pages, Netlify, your own server): publish the `public/` folder as it
-is, with no build command.
+**Anywhere else** (GitHub Pages, Netlify, Vercel, your own server): publish the `public/`
+folder as it is, with no build command. Set the headers from
+[`public/_headers`](public/_headers) there too: the page and `sw.js` must not be cached, or
+installed phones won't see updates.
 
 ## Privacy
 

@@ -136,27 +136,28 @@ trip.schema.json        every field, described
 tools/check.mjs         run until it passes
 tools/serve.mjs         local preview (?now= to time-travel)
 public/app.js, sw.js, styles.css, index.html   the engine
-firebase.json, wrangler.jsonc, public/_headers   hosting: Firebase or Cloudflare
+wrangler.jsonc, public/_headers   hosting: Cloudflare, or any static host
 ```
 
 ## Hosting
 
-Publishing is the person's call: ask before any of it. Any static host serves `public/` with
-no build step. Two are set up; offer both and let them choose:
+Publishing is the person's call: ask before any of it. `public/` is a static site with no
+build step, so any static host serves it.
 
-- **Firebase Hosting** (`firebase.json`): the suggested one. The person needs a Google account;
-  then `npx firebase-tools login` (in their browser), `firebase use --add` to pick or create a
-  project, and `firebase deploy --only hosting`. The address is `<project>.web.app`.
-- **Cloudflare** (`wrangler.jsonc`, headers in `public/_headers`): the quickest, with no
-  account to start. Set `name` in `wrangler.jsonc` to a short slug of the trip (lowercase,
-  digits and dashes); it becomes `<name>.<account>.workers.dev`. Then
+- **Cloudflare** (`wrangler.jsonc`, headers in `public/_headers`) is the suggested one, and
+  needs no account to start. Set `name` in `wrangler.jsonc` to a short slug of the trip
+  (lowercase, digits and dashes); it becomes `<name>.<account>.workers.dev`. Then
   `npx wrangler deploy --temporary`. It publishes at once and prints the site's address and a
   **claim link** (it may ask the person to accept Cloudflare's terms first). Give them both
-  and say plainly: open the claim link within 60 minutes and sign up or in, or the site is
+  and say plainly: open the claim link within 60 minutes and sign up or log in, or the site is
   deleted. The claim link is like a password: only to them. Later deploys:
   `npx wrangler login` once, then `npx wrangler deploy`.
+- **Another host**, if the person prefers one (GitHub Pages, Netlify, Vercel, their own
+  server): publish `public/` as it is, with no build command, and carry over the rules in
+  `public/_headers` in that host's own format. Don't add its config files to the repo unless
+  they ask.
 
-To deploy on every push, `.github/workflows/deploy.yml` needs `FIREBASE_SERVICE_ACCOUNT` (and a
-committed `.firebaserc`), or `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`, as repo
-secrets; without them it only runs the checks. Keep `firebase.json` and `public/_headers` in
-step: both set no-cache on the page and the service worker, and `noindex` everywhere.
+To deploy on every push, `.github/workflows/deploy.yml` needs `CLOUDFLARE_API_TOKEN` and
+`CLOUDFLARE_ACCOUNT_ID` as repo secrets; without them it only runs the checks. Whatever the
+host, the page and the service worker must be served with no-cache (or phones never see an
+update), and everything with `noindex`.

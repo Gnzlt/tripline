@@ -4,7 +4,7 @@
  *
  *   node tools/serve.mjs [port]        # default 8080
  *
- * Serves public/ the way Firebase Hosting does (clean URLs, nothing cached), so what
+ * Serves public/ the way Cloudflare does (clean URLs, nothing cached), so what
  * works here works there. Add ?now=2027-03-27T07:30 to the URL to see the trip at any
  * moment; a time with no offset is that day's local time.
  */
