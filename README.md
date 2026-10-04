@@ -3,9 +3,10 @@
 **Hand your bookings to your AI agent and get an offline trip timeline for your phone.**
 
 <p>
-  <img src="docs/timeline.png" width="260" alt="The timeline, showing what's happening right now">
-  <img src="docs/sheet.png" width="260" alt="An event's details: place, times, warnings, directions">
-  <img src="docs/driver.png" width="260" alt="A card in the local language to show a driver">
+  <img src="docs/timeline.png" width="200" alt="The timeline, showing what's happening right now">
+  <img src="docs/sheet.png" width="200" alt="An event's details: place, times, warnings, directions">
+  <img src="docs/qr.png" width="200" alt="A booked event with its entry QR code, ready to show at the door">
+  <img src="docs/driver.png" width="200" alt="A card in the local language to show a driver">
 </p>
 
 tripline turns your bookings into a small web app that opens instantly on your phone, even with
