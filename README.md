@@ -2,6 +2,13 @@
 
 **Hand your bookings to your AI agent and get an offline trip app you can install on your phone.**
 
+[![Checks](https://img.shields.io/github/actions/workflow/status/Gnzlt/tripline/deploy.yml?branch=main&label=checks)](https://github.com/Gnzlt/tripline/actions/workflows/deploy.yml)
+[![License: MIT](https://img.shields.io/github/license/Gnzlt/tripline)](LICENSE)
+[![PWA: works offline](https://img.shields.io/badge/PWA-offline-5A0FC8?logo=pwa&logoColor=white)](#install-it-on-your-phone)
+[![Dependencies: none](https://img.shields.io/badge/dependencies-none-2FB3A3)](#features)
+[![AGENTS.md](https://img.shields.io/badge/AGENTS.md-agent--ready-14161b)](AGENTS.md)
+[![Live example](https://img.shields.io/badge/live%20example-tokyo2027-F38020?logo=cloudflare&logoColor=white)](https://tokyo2027.tripline.workers.dev/)
+
 <p>
   <img src="docs/timeline.png" width="200" alt="The timeline mid-flight, with what's happening now and times in two zones">
   <img src="docs/sheet.png" width="200" alt="An event's details: place, times, directions and a drawn map">
