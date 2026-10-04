@@ -41,7 +41,7 @@ step. They give you their bookings; you turn them into data. This file is everyt
   platform or an address. A field you can't fill stays out.
 - **Never attribute what the source doesn't.** If two tickets don't say whose is whose, the
   page says "present both", not a guess.
-- **Times are what the local clock says where it happens** (`2027-04-08T09:46`), with no
+- **Times are what the local clock says where it happens** (`2027-03-28T08:30`), with no
   offset. The zone is the event's `timezone`, else its day's, else the trip's — all IANA
   names (`Asia/Bangkok`), never "+07:00", so daylight saving is handled for you. Give a day
   its own `timezone` when the trip moves to another zone, an event its own when it starts

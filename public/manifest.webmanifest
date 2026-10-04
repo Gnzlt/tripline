@@ -1,7 +1,7 @@
 {
   "id": "/",
-  "name": "Kansai in spring",
-  "short_name": "Kansai",
+  "name": "Melbourne to Tokyo",
+  "short_name": "Tokyo",
   "description": "Our trip, offline: what's now, what's next, and the details.",
   "start_url": "./",
   "scope": "./",

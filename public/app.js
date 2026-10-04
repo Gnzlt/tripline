@@ -1128,7 +1128,7 @@ initInstall();
 const CALENDAR_TYPES = new Set(['flight', 'train', 'hotel', 'ticket', 'sight']);
 const inCalendar = (e) => e.calendar ?? CALENDAR_TYPES.has(e.type);
 
-/** A name fit for a file: "Kansai in spring" → "kansai-in-spring". */
+/** A name fit for a file: "Melbourne to Tokyo" → "melbourne-to-tokyo". */
 const slugify = (s) => s.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
   .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'trip';
 

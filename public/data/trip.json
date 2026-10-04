@@ -1,226 +1,317 @@
 {
   "$schema": "../../trip.schema.json",
   "trip": {
-    "title": "Kansai in spring",
-    "brand": ["KAN", "SAI"],
+    "title": "Melbourne to Tokyo",
+    "brand": ["TO", "KYO"],
     "timezone": "Asia/Tokyo",
-    "locale": "en-GB",
+    "locale": "en-AU",
     "language": { "code": "ja", "name": "Japanese" },
     "shared": false
   },
   "links": [
-    { "icon": "🌦️", "label": "Weather", "sub": "tenki.jp · Kyoto", "url": "https://tenki.jp/forecast/6/29/6110/26100/" },
-    { "icon": "train", "label": "JR West", "sub": "Delays, Kansai", "url": "https://trafficinfo.westjr.co.jp/kinki.html" }
+    { "icon": "🌦️", "label": "Weather", "sub": "tenki.jp · Tokyo", "url": "https://tenki.jp/forecast/3/16/4410/13101/" },
+    { "icon": "train", "label": "Odakyu", "sub": "Romancecar · Hakone", "url": "https://odakyu-global.com/" }
   ],
   "days": [
     {
-      "date": "2027-04-08",
-      "title": "Into Kyoto",
-      "local": "京都",
-      "weather": { "name": "Kyoto", "local": "京都", "lat": 35.0116, "lng": 135.7681 },
+      "date": "2027-03-26",
+      "title": "Melbourne → Tokyo",
+      "local": "東京",
+      "timezone": "Australia/Melbourne",
+      "weather": { "name": "Tokyo", "local": "東京", "lat": 35.6895, "lng": 139.6917 },
       "events": [
+        {
+          "id": "d1-skybus",
+          "type": "move",
+          "start": "2027-03-26T06:30",
+          "end": "2027-03-26T07:05",
+          "title": "SkyBus → Melbourne Airport",
+          "summary": "From Southern Cross Station · about 30 min",
+          "to": { "name": "Melbourne Airport, Terminal 2", "geo": [-37.66929, 144.84858] },
+          "links": [{ "icon": "🚌", "label": "SkyBus", "url": "https://www.skybus.com.au/" }]
+        },
         {
           "id": "d1-flight",
           "type": "flight",
-          "start": "2027-04-08T06:40",
-          "end": "2027-04-08T08:30",
-          "title": "TL 101 · Seoul → Osaka",
-          "summary": "Example Air · 1 h 50 m",
-          "from": { "name": "Seoul Incheon (ICN)" },
-          "to": { "name": "Kansai International (KIX)", "local": "関西国際空港", "geo": [34.43433, 135.2442] },
+          "start": "2027-03-26T09:45",
+          "end": "2027-03-26T18:15",
+          "endTimezone": "Asia/Tokyo",
+          "title": "TL 61 · Melbourne → Tokyo",
+          "summary": "Example Air · 10 h 30 m",
+          "from": { "name": "Melbourne (MEL)" },
+          "to": { "name": "Tokyo Haneda (HND)", "local": "羽田空港", "geo": [35.54501, 139.76704] },
           "details": [
-            { "label": "Departs", "value": "06:40 · Seoul ICN, Terminal 1" },
-            { "label": "Arrives", "value": "08:30 · Osaka KIX, Terminal 1" },
-            { "label": "Seats", "value": "14A / 14B" }
-          ]
+            { "label": "Departs", "value": "09:45 · Melbourne, Terminal 2" },
+            { "label": "Arrives", "value": "18:15 · Tokyo Haneda, Terminal 3" },
+            { "label": "Seats", "value": "31A / 31B" }
+          ],
+          "warnings": ["Fill in Visit Japan Web before you land: its QR code takes you through the quicker immigration and customs lanes."]
         },
         {
           "id": "d1-arrival",
           "type": "admin",
-          "start": "2027-04-08T08:30",
-          "end": "2027-04-08T09:30",
+          "timezone": "Asia/Tokyo",
+          "start": "2027-03-26T18:15",
+          "end": "2027-03-26T19:15",
           "title": "Immigration, bags, IC card",
-          "summary": "Get an ICOCA card at the station before the train",
+          "summary": "Get a Suica card before the bus",
           "details": [
-            { "label": "ICOCA", "value": "Rechargeable IC card: trains, buses, lockers, convenience stores" },
-            { "label": "Ask for", "value": "ICOCAをください", "local": true }
+            { "label": "Suica", "value": "Rechargeable IC card: trains, buses, lockers, convenience stores" },
+            { "label": "Ask for", "value": "Suicaをください", "local": true }
           ]
         },
         {
-          "id": "d1-haruka",
-          "type": "train",
-          "start": "2027-04-08T09:46",
-          "end": "2027-04-08T11:05",
-          "title": "Limited express Haruka 15",
-          "summary": "Car 2 · 5A / 5B · reserved",
-          "from": { "name": "Kansai Airport", "local": "関西空港駅" },
-          "to": { "name": "Kyoto", "local": "京都駅", "geo": [34.98619, 135.76006] },
-          "details": [
-            { "label": "Depart", "value": "09:46 · 関西空港駅", "local": true },
-            { "label": "Arrive", "value": "11:05 · 京都駅", "local": true },
-            { "label": "Seats", "value": "Car 2 · 5A / 5B" }
-          ],
-          "warnings": ["Big bags go in the racks at the end of the car. Keep the ticket: the gate at Kyoto takes it back."],
-          "links": [{ "icon": "train", "label": "JR West delays", "url": "https://trafficinfo.westjr.co.jp/kinki.html" }],
-          "files": [{ "label": "Ticket", "src": "assets/trip/haruka-ticket.svg" }]
-        },
-        { "id": "d1-bags", "type": "move", "start": "2027-04-08T11:20", "title": "Drop the bags at the hotel", "summary": "Check-in is from 15:00" },
-        {
-          "id": "d1-lunch",
-          "type": "food",
-          "start": "2027-04-08T12:00",
-          "title": "Lunch at Kyoto Ramen Koji",
-          "summary": "Ramen alley on the 10th floor of the station building",
-          "maps": false
+          "id": "d1-bus",
+          "type": "move",
+          "timezone": "Asia/Tokyo",
+          "start": "2027-03-26T19:30",
+          "end": "2027-03-26T20:30",
+          "title": "Airport limousine bus → Shinjuku",
+          "summary": "From Terminal 3, outside arrivals · about 50 min",
+          "to": { "name": "Busta Shinjuku", "local": "バスタ新宿", "geo": [35.68835, 139.701] }
         },
         {
           "id": "d1-hotel",
           "type": "hotel",
-          "start": "2027-04-08T15:00",
-          "end": "2027-04-10T10:00",
-          "title": "Your hotel · Kyoto",
-          "summary": "2 nights · breakfast included",
+          "timezone": "Asia/Tokyo",
+          "start": "2027-03-26T20:45",
+          "end": "2027-03-29T11:00",
+          "title": "Your hotel · Shinjuku",
+          "summary": "3 nights · late arrival noted",
           "details": [
-            { "label": "Check-in / out", "value": "from 15:00 / by 10:00" },
+            { "label": "Check-in / out", "value": "from 15:00 / by 11:00" },
             { "label": "Room", "value": "Twin, non-smoking" }
           ],
           "maps": false
         },
         {
-          "id": "d1-kiyomizu",
-          "type": "sight",
-          "start": "2027-04-08T15:30",
-          "end": "2027-04-08T18:30",
-          "title": "Kiyomizu-dera and Higashiyama",
-          "place": { "name": "Kiyomizu-dera", "local": "清水寺", "url": "https://www.kiyomizudera.or.jp/en/", "geo": [34.9943, 135.78444] },
-          "summary": "The wooden stage over the cherry trees, then the old lanes downhill",
-          "details": [
-            { "label": "The way down", "value": "Sannenzaka · 産寧坂 → Ninenzaka · 二寧坂 → Yasaka Shrine", "local": true },
-            { "label": "Opening hours", "value": "From 06:00; closing time changes with the season" }
-          ],
-          "warnings": ["Cherry-blossom season: go up late in the afternoon, when the tour buses leave."],
-          "driver": { "local": "清水寺までお願いします", "en": "To Kiyomizu-dera, please" }
-        },
-        {
-          "id": "d1-gion",
+          "id": "d1-dinner",
           "type": "food",
-          "start": "2027-04-08T19:00",
-          "end": "2027-04-08T21:00",
-          "title": "Dinner in Gion",
-          "place": { "name": "Hanamikoji Street", "local": "花見小路通", "geo": [35.00802, 135.77546] },
-          "summary": "Small places, short menus — look for the paper lanterns",
-          "warnings": ["Some of Gion's private lanes ban photography. Follow the signs."]
+          "timezone": "Asia/Tokyo",
+          "start": "2027-03-26T21:15",
+          "title": "Late dinner in Omoide Yokocho",
+          "place": { "name": "Omoide Yokocho", "local": "思い出横丁", "geo": [35.69287, 139.69955] },
+          "summary": "Yakitori stalls in the alleys by the station's west exit",
+          "warnings": ["Most stalls seat under ten. Many add a small cover charge, with a starter you didn't order."]
         }
       ]
     },
     {
-      "date": "2027-04-09",
-      "title": "A thousand gates",
-      "local": "伏見",
-      "weather": { "name": "Kyoto", "local": "京都", "lat": 35.0116, "lng": 135.7681 },
+      "date": "2027-03-27",
+      "title": "Temples and blossoms",
+      "local": "浅草",
+      "weather": { "name": "Tokyo", "local": "東京", "lat": 35.6895, "lng": 139.6917 },
       "events": [
         {
-          "id": "d2-toInari",
+          "id": "d2-toAsakusa",
           "type": "move",
-          "start": "2027-04-09T06:00",
-          "title": "JR Nara line → Inari",
-          "summary": "Two stops, 5 min",
-          "to": { "name": "Inari Station", "local": "稲荷駅", "geo": [34.96674, 135.77084] }
+          "start": "2027-03-27T06:00",
+          "title": "JR Chūō line + Ginza line → Asakusa",
+          "summary": "Change at Kanda · about 35 min",
+          "to": { "name": "Asakusa Station", "local": "浅草駅", "geo": [35.70933, 139.79688] }
         },
         {
-          "id": "d2-inari",
+          "id": "d2-sensoji",
           "type": "sight",
-          "start": "2027-04-09T06:15",
-          "end": "2027-04-09T09:00",
-          "title": "Fushimi Inari at dawn",
-          "place": { "name": "Fushimi Inari Taisha", "local": "伏見稲荷大社", "url": "https://inari.jp/en/", "geo": [34.96708, 135.77254] },
-          "summary": "The torii tunnels before the crowds",
-          "image": { "src": "assets/trip/fushimi-inari.svg", "caption": "Mount Inari — up through the gates, round the top" },
+          "start": "2027-03-27T06:45",
+          "end": "2027-03-27T08:30",
+          "title": "Sensō-ji before the shops open",
+          "place": { "name": "Sensō-ji", "local": "浅草寺", "url": "https://www.senso-ji.jp/english/", "geo": [35.7134, 139.79553] },
+          "summary": "Tokyo's oldest temple, with the lanes still empty",
+          "image": { "src": "assets/trip/senso-ji.svg", "caption": "From the Thunder Gate to the Main Hall" },
           "details": [
-            { "label": "Open", "value": "24 hours · free" },
-            { "label": "The walk", "value": "Yotsutsuji viewpoint is about 45 min up; the loop over the top adds about an hour" }
+            { "label": "The way in", "value": "Kaminarimon · 雷門 → Nakamise · 仲見世 → Hōzōmon · 宝蔵門 → Main Hall · 本堂", "local": true },
+            { "label": "Early", "value": "The grounds never close. Before the shops open, Nakamise's shutters show their painted scenes." }
           ],
-          "alternatives": ["Short on energy: turn back at Yotsutsuji. The view is there, the summit has none."]
+          "alternatives": ["Too tired after the flight: come back at dusk instead, when the buildings are lit."],
+          "driver": { "local": "浅草寺までお願いします", "en": "To Sensō-ji, please" }
         },
-        { "id": "d2-breakfast", "type": "food", "start": "2027-04-09T09:30", "title": "Breakfast at the hotel", "summary": "Included" },
+        { "id": "d2-breakfast", "type": "food", "start": "2027-03-27T08:30", "title": "Breakfast in Asakusa", "summary": "Anywhere along the way back" },
         {
-          "id": "d2-nishiki",
+          "id": "d2-ueno",
+          "type": "sight",
+          "start": "2027-03-27T10:00",
+          "end": "2027-03-27T12:30",
+          "title": "Cherry blossoms in Ueno Park",
+          "place": { "name": "Ueno Park", "local": "上野恩賜公園", "url": "https://www.kensetsu.metro.tokyo.lg.jp/jimusho/toubuk/ueno/index_top.html", "geo": [35.71402, 139.77393] },
+          "summary": "The cherry-tree avenue, then round Shinobazu Pond",
+          "warnings": ["Blossom season: picnic groups claim the ground under the trees with tarps from early morning. Walk the avenue, sit by the pond."]
+        },
+        {
+          "id": "d2-ameyoko",
           "type": "food",
-          "start": "2027-04-09T13:00",
-          "end": "2027-04-09T15:00",
-          "title": "Nishiki Market",
-          "place": { "name": "Nishiki Market", "local": "錦市場", "url": "https://www.kyoto-nishiki.or.jp/", "geo": [35.00502, 135.76557] },
-          "summary": "Five blocks of pickles, tamagoyaki and skewers",
-          "warnings": ["Eat at the stall you bought from: walking while eating is frowned on here."]
+          "start": "2027-03-27T12:30",
+          "end": "2027-03-27T14:00",
+          "title": "Lunch along Ameyoko",
+          "place": { "name": "Ameya-Yokochō", "local": "アメヤ横丁", "geo": [35.71002, 139.77454] },
+          "summary": "The market street beside the tracks, from Ueno to Okachimachi"
         },
         {
-          "id": "d2-tea",
+          "id": "d2-toShibuya",
+          "type": "move",
+          "start": "2027-03-27T16:15",
+          "title": "Ginza line → Shibuya",
+          "summary": "One line, end to end · 30 min",
+          "to": { "name": "Shibuya Scramble Square", "local": "渋谷スクランブルスクエア", "geo": [35.65838, 139.70222] }
+        },
+        {
+          "id": "d2-sky",
           "type": "ticket",
-          "start": "2027-04-09T17:00",
-          "end": "2027-04-09T18:00",
-          "title": "Tea ceremony",
-          "summary": "Booked · show the code at the door",
+          "start": "2027-03-27T17:20",
+          "end": "2027-03-27T19:00",
+          "title": "Shibuya Sky at sunset",
+          "summary": "Booked · show the code on the 14th floor",
+          "place": { "name": "Shibuya Sky", "local": "渋谷スカイ", "url": "https://www.shibuya-scramble-square.com/sky/", "geo": [35.65829, 139.70226] },
           "details": [
-            { "label": "Dress", "value": "Socks: you'll be on tatami" },
-            { "label": "Arrive", "value": "10 minutes early" }
+            { "label": "Entry slot", "value": "17:20 · late arrivals can be turned away" },
+            { "label": "Bags", "value": "None on the rooftop: lockers first" }
           ],
-          "qr": [{ "label": "Both guests", "src": "assets/trip/qr-tea-ceremony.png" }],
+          "qr": [{ "label": "Both guests", "src": "assets/trip/qr-shibuya-sky.png" }]
+        },
+        { "id": "d2-dinner", "type": "food", "start": "2027-03-27T19:30", "title": "Dinner in Shibuya", "summary": "Then down to the Scramble crossing, at street level" }
+      ]
+    },
+    {
+      "date": "2027-03-28",
+      "title": "A day in Hakone",
+      "local": "箱根",
+      "weather": { "name": "Hakone", "local": "箱根", "lat": 35.2329, "lng": 139.1069 },
+      "events": [
+        {
+          "id": "d3-romancecar",
+          "type": "train",
+          "start": "2027-03-28T08:30",
+          "end": "2027-03-28T09:58",
+          "title": "Romancecar → Hakone-Yumoto",
+          "summary": "Car 4 · 8C / 8D · reserved",
+          "from": { "name": "Shinjuku", "local": "新宿駅" },
+          "to": { "name": "Hakone-Yumoto", "local": "箱根湯本駅", "geo": [35.2332, 139.10347] },
+          "details": [
+            { "label": "Depart", "value": "08:30 · 新宿駅, Odakyu side", "local": true },
+            { "label": "Arrive", "value": "09:58 · 箱根湯本駅", "local": true },
+            { "label": "Seats", "value": "Car 4 · 8C / 8D" }
+          ],
+          "warnings": ["The Odakyu platforms are on the west side of Shinjuku Station, apart from JR's. Allow 15 minutes."],
+          "links": [{ "icon": "train", "label": "Odakyu", "url": "https://odakyu-global.com/" }],
+          "files": [{ "label": "Ticket", "src": "assets/trip/romancecar-ticket.svg" }]
+        },
+        {
+          "id": "d3-loop",
+          "type": "move",
+          "start": "2027-03-28T10:15",
+          "title": "Round Hakone on the Freepass",
+          "summary": "Mountain train, cable car, ropeway, then the boat",
+          "details": [
+            { "label": "The loop", "value": "登山電車 → ケーブルカー → ロープウェイ → 海賊船", "local": true },
+            { "label": "Freepass", "value": "Covers all four, plus the bus back down" }
+          ],
+          "warnings": ["The ropeway stops in strong wind, or when the volcanic gas at Ōwakudani rises. Replacement buses run then."]
+        },
+        {
+          "id": "d3-owakudani",
+          "type": "sight",
+          "start": "2027-03-28T12:00",
+          "end": "2027-03-28T13:00",
+          "title": "Ōwakudani",
+          "place": { "name": "Ōwakudani", "local": "大涌谷", "geo": [35.24741, 139.02421] },
+          "summary": "Steam vents, sulphur, and eggs boiled black in the springs",
+          "details": [{ "label": "Black eggs", "value": "黒たまご", "local": true }]
+        },
+        { "id": "d3-lunch", "type": "food", "start": "2027-03-28T13:00", "title": "Lunch at the ropeway station", "summary": "Curry with a view of the crater" },
+        {
+          "id": "d3-shrine",
+          "type": "sight",
+          "start": "2027-03-28T14:30",
+          "end": "2027-03-28T16:00",
+          "title": "Hakone Shrine",
+          "place": { "name": "Hakone Shrine", "local": "箱根神社", "url": "https://hakonejinja.or.jp/", "geo": [35.20397, 139.02558] },
+          "summary": "Cedar steps up from Lake Ashi, and the red torii standing in the water",
+          "warnings": ["The queue for a photo at the lakeside torii can take longer than the shrine itself."]
+        },
+        {
+          "id": "d3-bus",
+          "type": "move",
+          "start": "2027-03-28T16:15",
+          "end": "2027-03-28T17:00",
+          "title": "Bus → Hakone-Yumoto",
+          "summary": "From Moto-Hakone, down the old road",
+          "to": { "name": "Hakone-Yumoto", "local": "箱根湯本駅", "geo": [35.2332, 139.10347] },
+          "driver": { "local": "箱根湯本駅行きのバスはどこですか？", "en": "Where is the bus to Hakone-Yumoto Station?" }
+        },
+        {
+          "id": "d3-back",
+          "type": "train",
+          "start": "2027-03-28T17:30",
+          "end": "2027-03-28T19:00",
+          "title": "Romancecar → Shinjuku",
+          "summary": "Car 6 · 3A / 3B · reserved",
+          "from": { "name": "Hakone-Yumoto", "local": "箱根湯本駅" },
+          "to": { "name": "Shinjuku", "local": "新宿駅" },
           "maps": false
         }
       ]
     },
     {
-      "date": "2027-04-10",
-      "title": "Deer, the Great Buddha, home",
-      "local": "奈良",
-      "weather": { "name": "Nara", "local": "奈良", "lat": 34.6851, "lng": 135.8048 },
+      "date": "2027-03-29",
+      "title": "Markets, a shrine, home",
+      "local": "築地",
+      "weather": { "name": "Tokyo", "local": "東京", "lat": 35.6895, "lng": 139.6917 },
       "events": [
-        { "id": "d3-checkout", "type": "admin", "pin": true, "start": "2027-04-10T09:30", "title": "Check out, bags along", "summary": "Lockers at Kintetsu Nara station" },
+        { "id": "d4-checkout", "type": "admin", "pin": true, "start": "2027-03-29T08:00", "title": "Check out, leave the bags", "summary": "The front desk keeps them until the airport bus" },
         {
-          "id": "d3-toNara",
-          "type": "train",
-          "start": "2027-04-10T10:00",
-          "end": "2027-04-10T10:35",
-          "title": "Kintetsu limited express → Nara",
-          "summary": "From the Kintetsu side of Kyoto Station",
-          "from": { "name": "Kyoto", "local": "京都駅" },
-          "to": { "name": "Kintetsu Nara", "local": "近鉄奈良駅", "geo": [34.68417, 135.82668] }
+          "id": "d4-tsukiji",
+          "type": "food",
+          "start": "2027-03-29T09:00",
+          "end": "2027-03-29T11:00",
+          "title": "Tsukiji Outer Market",
+          "place": { "name": "Tsukiji Outer Market", "local": "築地場外市場", "url": "https://www.tsukiji.or.jp/english/", "geo": [35.66539, 139.77047] },
+          "summary": "Tamagoyaki, tuna and grilled scallops, stall by stall",
+          "warnings": ["Eat at the stall you bought from: walking while eating is frowned on here."]
         },
         {
-          "id": "d3-todaiji",
+          "id": "d4-hamarikyu",
           "type": "sight",
-          "start": "2027-04-10T11:00",
-          "end": "2027-04-10T14:00",
-          "title": "Nara Park and Tōdai-ji",
-          "place": { "name": "Tōdai-ji", "local": "東大寺", "url": "https://www.todaiji.or.jp/en/", "geo": [34.68824, 135.83976] },
-          "summary": "The deer on the way, the Great Buddha at the end",
-          "details": [
-            { "label": "Deer crackers", "value": "鹿せんべい · from the stalls in the park", "local": true },
-            { "label": "Great Buddha Hall", "value": "大仏殿", "local": true }
-          ],
-          "warnings": ["Bow to a deer and it may bow back. Hold the crackers out of reach until you're ready — they push."]
+          "start": "2027-03-29T11:15",
+          "end": "2027-03-29T12:45",
+          "title": "Hama-rikyu Gardens",
+          "place": { "name": "Hama-rikyu Gardens", "local": "浜離宮恩賜庭園", "url": "https://www.tokyo-park.or.jp/teien/en/hama-rikyu/", "geo": [35.66018, 139.76382] },
+          "summary": "A shogun's garden on the bay, matcha in the teahouse on the pond"
         },
-        { "id": "d3-lunch", "type": "food", "start": "2027-04-10T14:00", "title": "Lunch in Naramachi", "summary": "The old merchant quarter, south of the station" },
         {
-          "id": "d3-bus",
+          "id": "d4-meiji",
+          "type": "sight",
+          "start": "2027-03-29T14:00",
+          "end": "2027-03-29T16:30",
+          "title": "Meiji Jingu and Harajuku",
+          "place": { "name": "Meiji Jingu", "local": "明治神宮", "url": "https://www.meijijingu.or.jp/en/", "geo": [35.67484, 139.69963] },
+          "summary": "The forest walk to the shrine, then Takeshita Street on the way out"
+        },
+        {
+          "id": "d4-bus",
           "type": "move",
-          "start": "2027-04-10T16:00",
-          "end": "2027-04-10T17:30",
-          "title": "Airport limousine bus → Kansai Airport",
-          "summary": "From Kintetsu Nara · about 90 min",
-          "to": { "name": "Kansai International (KIX)", "local": "関西国際空港", "geo": [34.43433, 135.2442] },
-          "driver": { "local": "関西空港行きのバスはどこですか？", "en": "Where is the bus to Kansai Airport?" }
+          "start": "2027-03-29T17:30",
+          "end": "2027-03-29T18:30",
+          "title": "Airport limousine bus → Haneda",
+          "summary": "Bags from the hotel first · about 50 min",
+          "to": { "name": "Haneda Airport, Terminal 3", "local": "羽田空港第3ターミナル", "geo": [35.54501, 139.76704] },
+          "driver": { "local": "羽田空港行きのバスはどこですか？", "en": "Where is the bus to Haneda Airport?" }
         },
-        { "id": "d3-checkin", "type": "admin", "pin": true, "start": "2027-04-10T17:45", "title": "Check in, security, departures" },
+        { "id": "d4-checkin", "type": "admin", "pin": true, "start": "2027-03-29T18:45", "title": "Check in, security, departures" },
         {
-          "id": "d3-flight",
+          "id": "d4-flight",
           "type": "flight",
-          "start": "2027-04-10T20:00",
-          "end": "2027-04-10T22:00",
-          "title": "TL 102 · Osaka → Seoul",
-          "summary": "Example Air · 2 h",
-          "from": { "name": "Kansai International (KIX)", "local": "関西国際空港" },
-          "to": { "name": "Seoul Incheon (ICN)" },
+          "start": "2027-03-29T21:55",
+          "end": "2027-03-30T09:25",
+          "endTimezone": "Australia/Melbourne",
+          "title": "TL 62 · Tokyo → Melbourne",
+          "summary": "Example Air · 9 h 30 m · overnight",
+          "from": { "name": "Tokyo Haneda (HND)", "local": "羽田空港" },
+          "to": { "name": "Melbourne (MEL)" },
+          "details": [
+            { "label": "Departs", "value": "21:55 · Tokyo Haneda, Terminal 3" },
+            { "label": "Arrives", "value": "09:25 next day · Melbourne, Terminal 2" },
+            { "label": "Seats", "value": "44A / 44B" }
+          ],
           "maps": false
         }
       ]

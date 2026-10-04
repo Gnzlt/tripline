@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 760" role="img" aria-label="The way into Sensō-ji">
+  <!-- A schematic drawn for the example trip, not a survey: which way, what's where. North is up. -->
+  <rect width="900" height="760" fill="#fbfaf7"/>
+  <text x="40" y="62" font-family="sans-serif" font-size="34" font-weight="800" fill="#14161b">Sensō-ji · 浅草寺</text>
+  <text x="40" y="100" font-family="sans-serif" font-size="24" fill="#6b7280">Through two gates and down the shopping street</text>
+
+  <!-- Nakamise: the shopping street between the two gates -->
+  <rect x="436" y="330" width="28" height="270" rx="6" fill="#E29000" fill-opacity=".18"/>
+  <!-- the walk: station → Kaminarimon → Nakamise → Hōzōmon → Main Hall -->
+  <path d="M760 680 L 450 680 L 450 210"
+        fill="none" stroke="#D1091E" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="26 12"/>
+
+  <g font-family="sans-serif">
+    <circle cx="760" cy="680" r="14" fill="#9ca3af"/>
+    <text x="780" y="640" font-size="22" fill="#6b7280" text-anchor="end">Asakusa Station · 浅草駅</text>
+
+    <rect x="420" y="660" width="60" height="40" rx="6" fill="#D1091E"/>
+    <text x="400" y="672" font-size="28" font-weight="800" fill="#14161b" text-anchor="end">Kaminarimon</text>
+    <text x="400" y="704" font-size="24" fill="#6b7280" text-anchor="end">雷門 · Thunder Gate</text>
+
+    <text x="490" y="470" font-size="26" font-weight="800" fill="#14161b">Nakamise · 仲見世</text>
+    <text x="490" y="502" font-size="22" fill="#6b7280">~250 m of stalls</text>
+
+    <rect x="420" y="310" width="60" height="40" rx="6" fill="#E29000"/>
+    <text x="500" y="340" font-size="26" font-weight="800" fill="#14161b">Hōzōmon · 宝蔵門</text>
+
+    <rect x="250" y="250" width="40" height="40" rx="4" fill="#00B2ED"/>
+    <text x="270" y="324" font-size="24" font-weight="800" fill="#14161b" text-anchor="middle">Pagoda</text>
+    <text x="270" y="352" font-size="22" fill="#6b7280" text-anchor="middle">五重塔</text>
+
+    <rect x="390" y="160" width="120" height="56" rx="8" fill="#8BBF4B"/>
+    <text x="530" y="186" font-size="28" font-weight="800" fill="#14161b">Main Hall · 本堂</text>
+    <text x="530" y="216" font-size="22" fill="#6b7280">Kannon, behind the incense</text>
+  </g>
+  <text x="860" y="745" font-family="sans-serif" font-size="18" fill="#9ca3af" text-anchor="end">schematic · not to scale</text>
+</svg>

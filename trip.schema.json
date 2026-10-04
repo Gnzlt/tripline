@@ -23,7 +23,7 @@
         "title": {
           "type": "string",
           "minLength": 1,
-          "description": "The trip's name, e.g. \"Kansai in spring\". The page title."
+          "description": "The trip's name, e.g. \"Melbourne to Tokyo\". The page title."
         },
         "brand": {
           "type": [
@@ -428,7 +428,7 @@
     "time": {
       "type": "string",
       "pattern": "^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d(:\\d\\d)?([+-]\\d\\d:\\d\\d)?$",
-      "description": "The local time where it happens, e.g. \"2027-04-08T09:46\" — the zone comes from the event, its day or the trip, daylight saving included. An explicit offset (\"…+07:00\") is allowed but rarely needed."
+      "description": "The local time where it happens, e.g. \"2027-03-28T08:30\" — the zone comes from the event, its day or the trip, daylight saving included. An explicit offset (\"…+07:00\") is allowed but rarely needed."
     },
     "place": {
       "type": "object",

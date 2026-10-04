@@ -5,7 +5,7 @@
  *   node tools/serve.mjs [port]        # default 8080
  *
  * Serves public/ the way Firebase Hosting does (clean URLs, nothing cached), so what
- * works here works there. Add ?now=2027-04-09T07:00 to the URL to see the trip at any
+ * works here works there. Add ?now=2027-03-27T07:30 to the URL to see the trip at any
  * moment; a time with no offset is that day's local time.
  */
 import { createServer } from 'node:http';
@@ -42,5 +42,5 @@ createServer(async (req, res) => {
   res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' }).end('Not found');
 }).listen(PORT, () => {
   console.log(`tripline preview: http://localhost:${PORT}/`);
-  console.log(`see any moment:   http://localhost:${PORT}/?now=2027-04-09T07:00`);
+  console.log(`see any moment:   http://localhost:${PORT}/?now=2027-03-27T07:30`);
 });

@@ -3,8 +3,8 @@
 **Hand your bookings to your AI agent and get an offline trip app you can install on your phone.**
 
 <p>
-  <img src="docs/timeline.png" width="200" alt="The timeline, showing what's happening right now">
-  <img src="docs/sheet.png" width="200" alt="An event's details: place, times, warnings, directions">
+  <img src="docs/timeline.png" width="200" alt="The timeline mid-flight, with what's happening now and times in two zones">
+  <img src="docs/sheet.png" width="200" alt="An event's details: place, times, directions and a drawn map">
   <img src="docs/qr.png" width="200" alt="A booked event with its entry QR code, ready to show at the door">
   <img src="docs/driver.png" width="200" alt="A card in the local language to show a driver">
 </p>
@@ -30,7 +30,7 @@ reads your bookings and builds the trip. [`AGENTS.md`](AGENTS.md) teaches it how
    screenshots. That folder is never committed.
 3. **Ask your agent:**
    > Read AGENTS.md, then build my trip from everything in bookings/.
-4. **Preview it** with `node tools/serve.mjs`. Add `?now=2027-04-09T07:00` to the URL to see any
+4. **Preview it** with `node tools/serve.mjs`. Add `?now=2027-03-27T07:30` to the URL to see any
    moment of the trip.
 5. **Deploy it** (below), install it on your phone, and go.
 
@@ -58,7 +58,7 @@ reads your bookings and builds the trip. [`AGENTS.md`](AGENTS.md) teaches it how
 There's no build step, no framework and no dependencies. The whole trip lives in one JSON file,
 [`public/data/trip.json`](public/data/trip.json), described by
 [`trip.schema.json`](trip.schema.json) and checked by `node tools/check.mjs`. The example trip
-is three days in Kansai.
+is four days from Melbourne to Tokyo, across two time zones.
 
 ## Install it on your phone
 
