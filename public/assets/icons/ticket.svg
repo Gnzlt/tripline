@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-label="Ticket">
+  <path d="M5 12h38v9a4 4 0 0 0 0 8v9H5v-9a4 4 0 0 0 0-8z" fill="#fff" stroke="#D1091E" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M31 13v4m0 5v4m0 5v4m0 5v-2" stroke="#D1091E" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="4 4"/>
+  <rect x="10" y="20" width="14" height="3" rx="1.5" fill="#D1091E"/>
+  <rect x="10" y="26" width="9" height="3" rx="1.5" fill="#D1091E"/>
+</svg>

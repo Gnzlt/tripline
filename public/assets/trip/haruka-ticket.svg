@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" role="img" aria-label="Sample train ticket">
+  <rect width="600" height="900" fill="#f4f1ea"/>
+  <rect x="40" y="60" width="520" height="780" rx="22" fill="#fff" stroke="#d6d1c4" stroke-width="3"/>
+  <rect x="40" y="60" width="520" height="120" rx="22" fill="#D1091E"/>
+  <rect x="40" y="150" width="520" height="30" fill="#D1091E"/>
+  <text x="80" y="118" font-family="sans-serif" font-size="30" font-weight="800" fill="#fff">LIMITED EXPRESS</text>
+  <text x="80" y="158" font-family="sans-serif" font-size="40" font-weight="800" fill="#fff">HARUKA 15</text>
+  <g font-family="sans-serif" fill="#14161b">
+    <text x="80" y="250" font-size="22" fill="#6b7280">From</text>
+    <text x="80" y="295" font-size="40" font-weight="800">Kansai Airport</text>
+    <text x="80" y="335" font-size="26" fill="#6b7280">関西空港 · 09:46</text>
+    <text x="80" y="410" font-size="22" fill="#6b7280">To</text>
+    <text x="80" y="455" font-size="40" font-weight="800">Kyoto</text>
+    <text x="80" y="495" font-size="26" fill="#6b7280">京都 · 11:05</text>
+    <line x1="80" y1="545" x2="520" y2="545" stroke="#d6d1c4" stroke-width="3" stroke-dasharray="10 10"/>
+    <text x="80" y="600" font-size="22" fill="#6b7280">Date</text>
+    <text x="80" y="640" font-size="32" font-weight="800">Thu 8 Apr</text>
+    <text x="330" y="600" font-size="22" fill="#6b7280">Car · Seats</text>
+    <text x="330" y="640" font-size="32" font-weight="800">2 · 5A 5B</text>
+    <text x="80" y="710" font-size="22" fill="#6b7280">Class</text>
+    <text x="80" y="750" font-size="32" font-weight="800">Reserved</text>
+  </g>
+  <text x="300" y="470" font-family="sans-serif" font-size="78" font-weight="900" fill="#D1091E" fill-opacity=".14"
+        text-anchor="middle" transform="rotate(-28 300 470)">SAMPLE</text>
+  <text x="300" y="815" font-family="sans-serif" font-size="20" fill="#6b7280" text-anchor="middle">tripline example — not a real ticket</text>
+</svg>

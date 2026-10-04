@@ -1,0 +1,230 @@
+{
+  "$schema": "../../trip.schema.json",
+  "trip": {
+    "title": "Kansai in spring",
+    "brand": ["KAN", "SAI"],
+    "timezone": "Asia/Tokyo",
+    "offset": "+09:00",
+    "locale": "en-GB",
+    "language": { "code": "ja", "name": "Japanese" },
+    "shared": false
+  },
+  "links": [
+    { "icon": "🌦️", "label": "Weather", "sub": "tenki.jp · Kyoto", "url": "https://tenki.jp/forecast/6/29/6110/26100/" },
+    { "icon": "train", "label": "JR West", "sub": "Delays, Kansai", "url": "https://trafficinfo.westjr.co.jp/kinki.html" }
+  ],
+  "days": [
+    {
+      "date": "2027-04-08",
+      "title": "Into Kyoto",
+      "local": "京都",
+      "weather": { "name": "Kyoto", "local": "京都", "lat": 35.0116, "lng": 135.7681 },
+      "events": [
+        {
+          "id": "d1-flight",
+          "type": "flight",
+          "start": "2027-04-08T06:40",
+          "end": "2027-04-08T08:30",
+          "title": "TL 101 · Seoul → Osaka",
+          "summary": "Example Air · 1 h 50 m",
+          "from": { "name": "Seoul Incheon (ICN)" },
+          "to": { "name": "Kansai International (KIX)", "local": "関西国際空港", "geo": [34.43433, 135.2442] },
+          "details": [
+            { "label": "Departs", "value": "06:40 · Seoul ICN, Terminal 1" },
+            { "label": "Arrives", "value": "08:30 · Osaka KIX, Terminal 1" },
+            { "label": "Seats", "value": "14A / 14B" }
+          ]
+        },
+        {
+          "id": "d1-arrival",
+          "type": "admin",
+          "start": "2027-04-08T08:30",
+          "end": "2027-04-08T09:30",
+          "title": "Immigration, bags, IC card",
+          "summary": "Get an ICOCA card at the station before the train",
+          "details": [
+            { "label": "ICOCA", "value": "Rechargeable IC card: trains, buses, lockers, convenience stores" },
+            { "label": "Ask for", "value": "ICOCAをください", "local": true }
+          ]
+        },
+        {
+          "id": "d1-haruka",
+          "type": "train",
+          "start": "2027-04-08T09:46",
+          "end": "2027-04-08T11:05",
+          "title": "Limited express Haruka 15",
+          "summary": "Car 2 · 5A / 5B · reserved",
+          "from": { "name": "Kansai Airport", "local": "関西空港駅" },
+          "to": { "name": "Kyoto", "local": "京都駅", "geo": [34.98619, 135.76006] },
+          "details": [
+            { "label": "Depart", "value": "09:46 · 関西空港駅", "local": true },
+            { "label": "Arrive", "value": "11:05 · 京都駅", "local": true },
+            { "label": "Seats", "value": "Car 2 · 5A / 5B" }
+          ],
+          "warnings": ["Big bags go in the racks at the end of the car. Keep the ticket: the gate at Kyoto takes it back."],
+          "links": [{ "icon": "train", "label": "JR West delays", "url": "https://trafficinfo.westjr.co.jp/kinki.html" }],
+          "files": [{ "label": "Ticket", "src": "assets/trip/haruka-ticket.svg" }]
+        },
+        { "id": "d1-bags", "type": "move", "start": "2027-04-08T11:20", "title": "Drop the bags at the hotel", "summary": "Check-in is from 15:00" },
+        {
+          "id": "d1-lunch",
+          "type": "food",
+          "start": "2027-04-08T12:00",
+          "title": "Lunch at Kyoto Ramen Koji",
+          "summary": "Ramen alley on the 10th floor of the station building",
+          "maps": false
+        },
+        {
+          "id": "d1-hotel",
+          "type": "hotel",
+          "start": "2027-04-08T15:00",
+          "end": "2027-04-10T10:00",
+          "title": "Your hotel · Kyoto",
+          "summary": "2 nights · breakfast included",
+          "details": [
+            { "label": "Check-in / out", "value": "from 15:00 / by 10:00" },
+            { "label": "Room", "value": "Twin, non-smoking" }
+          ],
+          "maps": false
+        },
+        {
+          "id": "d1-kiyomizu",
+          "type": "sight",
+          "start": "2027-04-08T15:30",
+          "end": "2027-04-08T18:30",
+          "title": "Kiyomizu-dera and Higashiyama",
+          "place": { "name": "Kiyomizu-dera", "local": "清水寺", "url": "https://www.kiyomizudera.or.jp/en/", "geo": [34.9943, 135.78444] },
+          "summary": "The wooden stage over the cherry trees, then the old lanes downhill",
+          "details": [
+            { "label": "The way down", "value": "Sannenzaka · 産寧坂 → Ninenzaka · 二寧坂 → Yasaka Shrine", "local": true },
+            { "label": "Opening hours", "value": "From 06:00; closing time changes with the season" }
+          ],
+          "warnings": ["Cherry-blossom season: go up late in the afternoon, when the tour buses leave."],
+          "driver": { "local": "清水寺までお願いします", "en": "To Kiyomizu-dera, please" }
+        },
+        {
+          "id": "d1-gion",
+          "type": "food",
+          "start": "2027-04-08T19:00",
+          "end": "2027-04-08T21:00",
+          "title": "Dinner in Gion",
+          "place": { "name": "Hanamikoji Street", "local": "花見小路通", "geo": [35.00802, 135.77546] },
+          "summary": "Small places, short menus — look for the paper lanterns",
+          "warnings": ["Some of Gion's private lanes ban photography. Follow the signs."]
+        }
+      ]
+    },
+    {
+      "date": "2027-04-09",
+      "title": "A thousand gates",
+      "local": "伏見",
+      "weather": { "name": "Kyoto", "local": "京都", "lat": 35.0116, "lng": 135.7681 },
+      "events": [
+        {
+          "id": "d2-toInari",
+          "type": "move",
+          "start": "2027-04-09T06:00",
+          "title": "JR Nara line → Inari",
+          "summary": "Two stops, 5 min",
+          "to": { "name": "Inari Station", "local": "稲荷駅", "geo": [34.96674, 135.77084] }
+        },
+        {
+          "id": "d2-inari",
+          "type": "sight",
+          "start": "2027-04-09T06:15",
+          "end": "2027-04-09T09:00",
+          "title": "Fushimi Inari at dawn",
+          "place": { "name": "Fushimi Inari Taisha", "local": "伏見稲荷大社", "url": "https://inari.jp/en/", "geo": [34.96708, 135.77254] },
+          "summary": "The torii tunnels before the crowds",
+          "image": { "src": "assets/trip/fushimi-inari.svg", "caption": "Mount Inari — up through the gates, round the top" },
+          "details": [
+            { "label": "Open", "value": "24 hours · free" },
+            { "label": "The walk", "value": "Yotsutsuji viewpoint is about 45 min up; the loop over the top adds about an hour" }
+          ],
+          "alternatives": ["Short on energy: turn back at Yotsutsuji. The view is there, the summit has none."]
+        },
+        { "id": "d2-breakfast", "type": "food", "start": "2027-04-09T09:30", "title": "Breakfast at the hotel", "summary": "Included" },
+        {
+          "id": "d2-nishiki",
+          "type": "food",
+          "start": "2027-04-09T13:00",
+          "end": "2027-04-09T15:00",
+          "title": "Nishiki Market",
+          "place": { "name": "Nishiki Market", "local": "錦市場", "url": "https://www.kyoto-nishiki.or.jp/", "geo": [35.00502, 135.76557] },
+          "summary": "Five blocks of pickles, tamagoyaki and skewers",
+          "warnings": ["Eat at the stall you bought from: walking while eating is frowned on here."]
+        },
+        {
+          "id": "d2-tea",
+          "type": "ticket",
+          "start": "2027-04-09T17:00",
+          "end": "2027-04-09T18:00",
+          "title": "Tea ceremony",
+          "summary": "Booked · show the code at the door",
+          "details": [
+            { "label": "Dress", "value": "Socks: you'll be on tatami" },
+            { "label": "Arrive", "value": "10 minutes early" }
+          ],
+          "qr": [{ "label": "Both guests", "src": "assets/trip/qr-tea-ceremony.png" }],
+          "maps": false
+        }
+      ]
+    },
+    {
+      "date": "2027-04-10",
+      "title": "Deer, the Great Buddha, home",
+      "local": "奈良",
+      "weather": { "name": "Nara", "local": "奈良", "lat": 34.6851, "lng": 135.8048 },
+      "events": [
+        { "id": "d3-checkout", "type": "admin", "pin": true, "start": "2027-04-10T09:30", "title": "Check out, bags along", "summary": "Lockers at Kintetsu Nara station" },
+        {
+          "id": "d3-toNara",
+          "type": "train",
+          "start": "2027-04-10T10:00",
+          "end": "2027-04-10T10:35",
+          "title": "Kintetsu limited express → Nara",
+          "summary": "From the Kintetsu side of Kyoto Station",
+          "from": { "name": "Kyoto", "local": "京都駅" },
+          "to": { "name": "Kintetsu Nara", "local": "近鉄奈良駅", "geo": [34.68417, 135.82668] }
+        },
+        {
+          "id": "d3-todaiji",
+          "type": "sight",
+          "start": "2027-04-10T11:00",
+          "end": "2027-04-10T14:00",
+          "title": "Nara Park and Tōdai-ji",
+          "place": { "name": "Tōdai-ji", "local": "東大寺", "url": "https://www.todaiji.or.jp/en/", "geo": [34.68824, 135.83976] },
+          "summary": "The deer on the way, the Great Buddha at the end",
+          "details": [
+            { "label": "Deer crackers", "value": "鹿せんべい · from the stalls in the park", "local": true },
+            { "label": "Great Buddha Hall", "value": "大仏殿", "local": true }
+          ],
+          "warnings": ["Bow to a deer and it may bow back. Hold the crackers out of reach until you're ready — they push."]
+        },
+        { "id": "d3-lunch", "type": "food", "start": "2027-04-10T14:00", "title": "Lunch in Naramachi", "summary": "The old merchant quarter, south of the station" },
+        {
+          "id": "d3-bus",
+          "type": "move",
+          "start": "2027-04-10T16:00",
+          "end": "2027-04-10T17:30",
+          "title": "Airport limousine bus → Kansai Airport",
+          "summary": "From Kintetsu Nara · about 90 min",
+          "to": { "name": "Kansai International (KIX)", "local": "関西国際空港", "geo": [34.43433, 135.2442] },
+          "driver": { "local": "関西空港行きのバスはどこですか？", "en": "Where is the bus to Kansai Airport?" }
+        },
+        { "id": "d3-checkin", "type": "admin", "pin": true, "start": "2027-04-10T17:45", "title": "Check in, security, departures" },
+        {
+          "id": "d3-flight",
+          "type": "flight",
+          "start": "2027-04-10T20:00",
+          "end": "2027-04-10T22:00",
+          "title": "TL 102 · Osaka → Seoul",
+          "summary": "Example Air · 2 h",
+          "from": { "name": "Kansai International (KIX)", "local": "関西国際空港" },
+          "to": { "name": "Seoul Incheon (ICN)" },
+          "maps": false
+        }
+      ]
+    }
+  ]
+}

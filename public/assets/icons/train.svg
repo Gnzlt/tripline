@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Train">
+  <rect width="64" height="64" rx="15" fill="#D1091E"/>
+  <!-- A train seen head-on: body, windscreen, lamps, rails -->
+  <rect x="17" y="11" width="30" height="35" rx="9" fill="#fff"/>
+  <rect x="22" y="17" width="20" height="12" rx="3" fill="#D1091E"/>
+  <circle cx="24.5" cy="38" r="2.8" fill="#D1091E"/>
+  <circle cx="39.5" cy="38" r="2.8" fill="#D1091E"/>
+  <path d="M22 46 17 54M42 46l5 8M19 51h26" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/>
+</svg>

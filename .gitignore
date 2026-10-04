@@ -1,0 +1,16 @@
+# Your bookings: PDFs, emails, screenshots for the agent to read. Never committed.
+bookings/*
+!bookings/README.md
+
+# Booking documents anywhere else stay out too.
+*.pdf
+*.eml
+
+# Firebase
+.firebase/
+firebase-debug.log
+*.log
+
+# Editors and OS
+.DS_Store
+node_modules/

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-label="Live camera">
+  <rect x="4" y="15" width="27" height="19" rx="5" fill="#fff" stroke="#00B2ED" stroke-width="3"/>
+  <path d="M33 24.5 44 17v15z" fill="#00B2ED"/>
+  <circle cx="17" cy="24.5" r="5" fill="none" stroke="#00B2ED" stroke-width="3"/>
+  <circle cx="9.5" cy="20" r="2" fill="#D1091E"/>
+</svg>

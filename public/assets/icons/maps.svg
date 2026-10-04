@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Maps">
+  <rect width="64" height="64" rx="15" fill="#2FB3A3"/>
+  <!-- A map pin: where the Maps button goes -->
+  <path d="M32 11c-8.3 0-15 6.6-15 14.8C17 37 32 53 32 53s15-16 15-27.2C47 17.6 40.3 11 32 11Zm0 20.5a5.8 5.8 0 1 1 0-11.6 5.8 5.8 0 0 1 0 11.6Z" fill="#fff"/>
+</svg>

@@ -1,0 +1,616 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Trip",
+  "description": "One trip for the timeline app: public/data/trip.json. check.mjs validates it against this file.",
+  "type": "object",
+  "required": [
+    "trip",
+    "days"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "trip": {
+      "type": "object",
+      "required": [
+        "title",
+        "timezone",
+        "offset"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The trip's name, e.g. \"Kansai in spring\". The page title."
+        },
+        "brand": {
+          "type": [
+            "string",
+            "array"
+          ],
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "description": "The header wordmark. Split into pieces to choose where its colours change, e.g. [\"CHI\", \"NA\", \"LAN\", \"DIA\"]. Defaults to the title."
+        },
+        "timezone": {
+          "type": "string",
+          "minLength": 1,
+          "description": "IANA zone every time is shown in, e.g. \"Asia/Shanghai\"."
+        },
+        "offset": {
+          "type": "string",
+          "pattern": "^[+-]\\d\\d:\\d\\d$",
+          "description": "UTC offset added to every local time below, e.g. \"+08:00\"."
+        },
+        "locale": {
+          "type": "string",
+          "minLength": 2,
+          "description": "BCP 47 locale for dates and times, e.g. \"en-GB\", \"es-ES\", \"en-US\". Defaults to \"en-GB\". Pair it with `ui` to put the whole page in another language."
+        },
+        "language": {
+          "type": "object",
+          "required": [
+            "code",
+            "name"
+          ],
+          "additionalProperties": false,
+          "description": "The language `local` fields are written in.",
+          "properties": {
+            "code": {
+              "type": "string",
+              "minLength": 2,
+              "description": "BCP 47 tag, e.g. \"ja\", \"zh-Hans\", \"ko\"."
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "shared": {
+          "type": "boolean",
+          "description": "The site is shared beyond the travellers. check.mjs then refuses QR codes, files and anything that looks like personal data."
+        },
+        "wrap": {
+          "type": "object",
+          "required": [
+            "title"
+          ],
+          "additionalProperties": false,
+          "description": "The status card once the trip is over. Defaults to a count of days, trains and hotels.",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "sub": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "ui": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The app's own words, in the traveller's language. Any key left out keeps its English default. {placeholders} are filled in at run time and must be kept.",
+      "properties": {
+        "skip": {
+          "type": "string",
+          "description": "Default: \"Skip to timeline\""
+        },
+        "loading": {
+          "type": "string",
+          "description": "Default: \"Loading…\""
+        },
+        "notLongNow": {
+          "type": "string",
+          "description": "Default: \"🧳 Not long now\""
+        },
+        "rightNow": {
+          "type": "string",
+          "description": "Default: \"📍 Right now\""
+        },
+        "upNext": {
+          "type": "string",
+          "description": "Default: \"⏭️ Up next\""
+        },
+        "wrapUp": {
+          "type": "string",
+          "description": "Default: \"🎉 That's a wrap!\""
+        },
+        "timeLeft": {
+          "type": "string",
+          "description": "Default: \"{time} left\""
+        },
+        "timeUntil": {
+          "type": "string",
+          "description": "Default: \"in {time}\""
+        },
+        "dayOf": {
+          "type": "string",
+          "description": "Default: \"Day {day} of {days}\""
+        },
+        "daysAndStops": {
+          "type": "string",
+          "description": "Default: \"{days} days · {stops} stops\""
+        },
+        "notStarted": {
+          "type": "string",
+          "description": "Default: \"not started\""
+        },
+        "complete": {
+          "type": "string",
+          "description": "Default: \"complete\""
+        },
+        "jumpNow": {
+          "type": "string",
+          "description": "Default: \"Now\""
+        },
+        "details": {
+          "type": "string",
+          "description": "Default: \"Details\""
+        },
+        "image": {
+          "type": "string",
+          "description": "Default: \"Map — tap to enlarge\""
+        },
+        "entryCodes": {
+          "type": "string",
+          "description": "Default: \"Entry codes — tap to enlarge\""
+        },
+        "showDriver": {
+          "type": "string",
+          "description": "Default: \"Show the driver\""
+        },
+        "tapFullscreen": {
+          "type": "string",
+          "description": "Default: \"Tap for fullscreen →\""
+        },
+        "copy": {
+          "type": "string",
+          "description": "Default: \"Copy\""
+        },
+        "copied": {
+          "type": "string",
+          "description": "Default: \"✓ Copied\""
+        },
+        "holdToCopy": {
+          "type": "string",
+          "description": "Default: \"Hold to copy\""
+        },
+        "alternatives": {
+          "type": "string",
+          "description": "Default: \"Alternatives\""
+        },
+        "live": {
+          "type": "string",
+          "description": "Default: \"Live · needs signal\""
+        },
+        "getThere": {
+          "type": "string",
+          "description": "Default: \"Get there\""
+        },
+        "booking": {
+          "type": "string",
+          "description": "Default: \"Your booking\""
+        },
+        "maps": {
+          "type": "string",
+          "description": "Default: \"Maps\""
+        },
+        "mapsPinned": {
+          "type": "string",
+          "description": "Default: \"Pinned by coordinates · {place}\""
+        },
+        "mapsSearch": {
+          "type": "string",
+          "description": "Default: \"Searches Google Maps for {place}\""
+        },
+        "from": {
+          "type": "string",
+          "description": "Default: \"From\""
+        },
+        "to": {
+          "type": "string",
+          "description": "Default: \"To\""
+        },
+        "outlook": {
+          "type": "string",
+          "description": "Default: \"outlook\""
+        },
+        "humidity": {
+          "type": "string",
+          "description": "Default: \"Humidity {value}%\""
+        },
+        "upAt": {
+          "type": "string",
+          "description": "Default: \"🧥 Up at {place}, {m} m: about {hi}° / {lo}°\""
+        },
+        "timesNote": {
+          "type": "string",
+          "description": "Default: \"All times are trip-local: {timezone}, UTC{offset}. Works offline once loaded.\""
+        },
+        "weatherNote": {
+          "type": "string",
+          "description": "Default: \"Weather is a snapshot taken {date} by Open-Meteo.\""
+        },
+        "updateTitle": {
+          "type": "string",
+          "description": "Default: \"Trip update ready\""
+        },
+        "updateText": {
+          "type": "string",
+          "description": "Default: \"New plan details are downloaded. Tap Update to see them.\""
+        },
+        "update": {
+          "type": "string",
+          "description": "Default: \"Update\""
+        },
+        "updating": {
+          "type": "string",
+          "description": "Default: \"Updating…\""
+        },
+        "later": {
+          "type": "string",
+          "description": "Default: \"Later\""
+        },
+        "checking": {
+          "type": "string",
+          "description": "Default: \"checking…\""
+        },
+        "updateReady": {
+          "type": "string",
+          "description": "Default: \"update ready\""
+        },
+        "types": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "The label on an event sheet for each type.",
+          "properties": {
+            "flight": {
+              "type": "string"
+            },
+            "train": {
+              "type": "string"
+            },
+            "hotel": {
+              "type": "string"
+            },
+            "ticket": {
+              "type": "string"
+            },
+            "move": {
+              "type": "string"
+            },
+            "food": {
+              "type": "string"
+            },
+            "sight": {
+              "type": "string"
+            },
+            "admin": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "links": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/chip"
+      },
+      "description": "Network-only shortcuts shown above the timeline: weather, rail, flights."
+    },
+    "days": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "date",
+          "title",
+          "events"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "date": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d\\d-\\d\\d$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "local": {
+            "type": "string",
+            "description": "The day's place in the local language, shown on the right of the day header."
+          },
+          "weather": {
+            "type": "object",
+            "required": [
+              "name",
+              "lat",
+              "lng"
+            ],
+            "additionalProperties": false,
+            "description": "Where tools/forecast.mjs takes this day's forecast: the town you are in, not the summit.",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "local": {
+                "type": "string"
+              },
+              "lat": {
+                "type": "number"
+              },
+              "lng": {
+                "type": "number"
+              },
+              "high": {
+                "type": "object",
+                "required": [
+                  "m",
+                  "name"
+                ],
+                "additionalProperties": false,
+                "description": "A day spent well above the town: the strip adds the temperature up there (6.5 °C per 1000 m).",
+                "properties": {
+                  "m": {
+                    "type": "number",
+                    "description": "Altitude in metres."
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "note": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "events": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/$defs/event"
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "time": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d(:\\d\\d)?([+-]\\d\\d:\\d\\d)?$",
+      "description": "Local time, e.g. \"2026-09-26T08:03\". The trip's offset is added unless one is written."
+    },
+    "place": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "In English."
+        },
+        "local": {
+          "type": "string",
+          "description": "In the local language: what you show a driver or paste into a map."
+        },
+        "url": {
+          "type": "string",
+          "pattern": "^https://",
+          "description": "The venue's own page: photos, address, hours."
+        },
+        "geo": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2,
+          "description": "[lat, lng] as Google Maps shows them (in mainland China that is GCJ-02). Without it, Maps searches for the name."
+        }
+      }
+    },
+    "chip": {
+      "type": "object",
+      "required": [
+        "icon",
+        "label",
+        "url"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "icon": {
+          "type": "string",
+          "minLength": 1,
+          "description": "An emoji, or the name of an icon in public/assets/icons/: maps, train, flight, cam, ticket, pdf."
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sub": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string",
+          "pattern": "^https?://"
+        }
+      }
+    },
+    "asset": {
+      "type": "object",
+      "required": [
+        "src"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "caption": {
+          "type": "string"
+        },
+        "src": {
+          "type": "string",
+          "pattern": "^assets/trip/",
+          "description": "A file under public/assets/trip/, e.g. \"assets/trip/route.svg\"."
+        }
+      }
+    },
+    "event": {
+      "type": "object",
+      "required": [
+        "type",
+        "start",
+        "title"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[\\w-]+$",
+          "description": "Optional. Defaults to d<day>-<n>."
+        },
+        "type": {
+          "enum": [
+            "flight",
+            "train",
+            "hotel",
+            "ticket",
+            "move",
+            "food",
+            "sight",
+            "admin"
+          ]
+        },
+        "start": {
+          "$ref": "#/$defs/time"
+        },
+        "end": {
+          "$ref": "#/$defs/time",
+          "description": "Omit for a moment rather than a span."
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "summary": {
+          "type": "string"
+        },
+        "pin": {
+          "type": "boolean",
+          "description": "Bold a plain row: a moment that matters but has nothing to open."
+        },
+        "place": {
+          "$ref": "#/$defs/place"
+        },
+        "from": {
+          "$ref": "#/$defs/place"
+        },
+        "to": {
+          "$ref": "#/$defs/place"
+        },
+        "maps": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/place"
+            },
+            {
+              "const": false
+            }
+          ],
+          "description": "Where the Maps button goes, when it isn't `to` or `place`. false: no Maps button."
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "label",
+              "value"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              },
+              "local": {
+                "type": "boolean",
+                "description": "The value is in the local language."
+              }
+            }
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "alternatives": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "driver": {
+          "type": "object",
+          "required": [
+            "local"
+          ],
+          "additionalProperties": false,
+          "description": "A card to show a driver, fullscreen.",
+          "properties": {
+            "local": {
+              "type": "string"
+            },
+            "en": {
+              "type": "string"
+            }
+          }
+        },
+        "image": {
+          "$ref": "#/$defs/asset",
+          "description": "A drawn map or a photo, opened fullscreen."
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/chip"
+          },
+          "description": "Live pages that need signal."
+        },
+        "qr": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/asset"
+          },
+          "description": "Entry codes. Not allowed when the trip is shared."
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/asset"
+          },
+          "description": "Booking documents: a .pdf opens in a tab, an image fullscreen. Not allowed when the trip is shared."
+        }
+      }
+    }
+  }
+}
