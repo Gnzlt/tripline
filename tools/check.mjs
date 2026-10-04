@@ -82,7 +82,8 @@ const BUILTIN = new Set(['if','for','while','switch','catch','return','typeof','
   'unregister','release','request','writeText','execCommand','select','startsWith','endsWith','includes',
   'toLowerCase','toUpperCase','setProperty','getPropertyValue','getBoundingClientRect','scrollTo','decode',
   'confirm','alert','var','get','set','in','new','delete','void','do','else','try','String','Number','Boolean','Date','Math','JSON','Object','Array','Set','Map','URL',
-  'URLSearchParams','Intl','Promise','Request','Response','sort','reduce','some','every','concat','toggleAttribute']);
+  'URLSearchParams','Intl','Promise','Request','Response','sort','reduce','some','every','concat','toggleAttribute',
+  'matchMedia','getItem','setItem','prompt']);
 
 const unknown = [...called].filter(n => !defined.has(n) && !declaredInline.has(n) && !BUILTIN.has(n));
 unknown.length ? fail.push(`called but never defined: ${unknown.join(', ')}`)
@@ -247,6 +248,28 @@ if (trip?.trip?.shared) {
   }
   found.length ? fail.push(`shared trip, but personal data: ${found.slice(0, 12).join('; ')}${found.length > 12 ? ` (+${found.length - 12} more)` : ''}`)
                : ok.push('shared trip: no QR codes, booking files, numbers, PINs, phones or emails');
+}
+
+// 4d. Installable. The trip is a PWA: Chrome and Edge only offer to install a page whose
+//     manifest has a name, a start URL, standalone display and 192 and 512 px icons, and
+//     whose service worker is registered. The home screen shows the manifest's names, so
+//     they belong to the trip: name is the trip's title, short_name fits under an icon.
+{
+  const bad = [];
+  let m = null;
+  try { m = JSON.parse(readFileSync('public/manifest.webmanifest', 'utf8')); } catch (e) { bad.push(`manifest.webmanifest does not parse: ${e.message}`); }
+  if (m) {
+    for (const k of ['name', 'short_name', 'start_url']) if (!m[k]) bad.push(`manifest has no ${k}`);
+    if (m.display !== 'standalone') bad.push('manifest display must be "standalone"');
+    for (const size of ['192x192', '512x512']) if (!m.icons?.some((i) => i.sizes === size)) bad.push(`manifest has no ${size} icon`);
+    for (const i of m.icons ?? []) if (!existsSync(`public/${i.src}`)) bad.push(`manifest icon ${i.src} is missing`);
+    if (trip?.trip?.title && m.name !== trip.trip.title) bad.push(`manifest name is "${m.name}" — set it to the trip's title, "${trip.trip.title}"`);
+    if (m.short_name && [...m.short_name].length > 12) bad.push(`manifest short_name "${m.short_name}" is longer than 12 characters and gets cut under the home-screen icon`);
+  }
+  if (!/rel="manifest"/.test(readFileSync('public/index.html', 'utf8'))) bad.push('index.html does not link the manifest');
+  if (!/serviceWorker\.register\(/.test(src)) bad.push('app.js no longer registers the service worker');
+  bad.length ? fail.push(`not installable as an app: ${bad.join('; ')}`)
+             : ok.push(`installable: "${m.name}" on the home screen as "${m.short_name}"`);
 }
 
 // 5. The CI stamp targets must still exist, or deploys silently stop busting caches

@@ -9,7 +9,8 @@
 <meta name="theme-color" content="#fbfaf7">
 <meta name="color-scheme" content="light only">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Trip">
+<!-- The home-screen name: app.js fills it from the manifest's short_name. -->
+<meta name="apple-mobile-web-app-title" content="">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
@@ -65,11 +66,22 @@
   </span>
 </div>
 
+<!-- The install offer: once, at the bottom, never above the timeline. -->
+<div class="update install" id="install" hidden role="dialog" aria-labelledby="installTitle">
+  <span class="update-icon" aria-hidden="true">📲</span>
+  <span class="update-text"><b id="installTitle">Keep this trip on your phone</b><small id="installText"></small></span>
+  <span class="update-btns">
+    <button class="update-go" id="installGo" type="button">Install</button>
+    <button class="update-later" id="installLater" type="button">Not now</button>
+  </span>
+</div>
+
 <button class="jump" id="jumpNow" type="button" hidden>
   <span aria-hidden="true">◎</span> <span id="jumpLabel">Now</span>
 </button>
 
 <footer class="foot">
+  <p><button class="install-foot" id="installFoot" type="button" hidden>📲 Install as an app</button></p>
   <p id="footTrip"></p>
   <p class="muted" id="footTz"></p>
   <p class="muted" id="wxNote" hidden></p>

@@ -1,25 +1,27 @@
 {
   "id": "/",
-  "name": "Trip timeline",
-  "short_name": "Trip",
-  "description": "A live trip timeline — what's next, with the details, offline.",
+  "name": "Kansai in spring",
+  "short_name": "Kansai",
+  "description": "Our trip, offline: what's now, what's next, and the details.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#ffffff",
-  "theme_color": "#ffffff",
+  "background_color": "#fbfaf7",
+  "theme_color": "#fbfaf7",
   "lang": "en",
   "icons": [
     {
       "src": "assets/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "assets/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "assets/icon-512-maskable.png",

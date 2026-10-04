@@ -260,6 +260,34 @@
           "type": "string",
           "description": "Default: \"Later\""
         },
+        "installTitle": {
+          "type": "string",
+          "description": "Default: \"Keep this trip on your phone\""
+        },
+        "installText": {
+          "type": "string",
+          "description": "Default: \"Install it as an app: it opens from your home screen and works with no signal.\""
+        },
+        "installIos": {
+          "type": "string",
+          "description": "Default: \"Tap the Share button, then “Add to Home Screen”.\""
+        },
+        "installOther": {
+          "type": "string",
+          "description": "Default: \"Open your browser menu and choose “Install app” or “Add to Home screen”.\""
+        },
+        "install": {
+          "type": "string",
+          "description": "Default: \"Install\""
+        },
+        "installFoot": {
+          "type": "string",
+          "description": "Default: \"📲 Install as an app\""
+        },
+        "notNow": {
+          "type": "string",
+          "description": "Default: \"Not now\""
+        },
         "checking": {
           "type": "string",
           "description": "Default: \"checking…\""

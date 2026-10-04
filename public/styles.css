@@ -239,6 +239,18 @@
   }
   .update-later { padding: 4px 8px; background: none; color: #fff; font-size: .76rem; opacity: .7; }
 
+  /* The install offer: the update card's shape, calmer — blue, no pulse. */
+  .install {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--blue) 40%, transparent), var(--shadow-lg);
+    .update-go { background: var(--blue); color: #04263a; animation: none; &[hidden] { display: none; } }
+  }
+  .install-foot {
+    margin: 4px 0 8px; padding: 9px 16px; cursor: pointer;
+    border: 1px solid var(--line); border-radius: 99px;
+    background: var(--surface); color: var(--ink); font: inherit; font-weight: 750;
+    &[hidden] { display: none; }
+  }
+
   @keyframes update-in {
     from { transform: translateY(calc(100% + 24px)); opacity: 0; }
     to   { transform: none; opacity: 1; }
@@ -255,6 +267,7 @@
     position: fixed; z-index: 30;
     right: var(--gutter); bottom: calc(var(--safe-b) + 18px);
     .update:not([hidden]) ~ & { bottom: calc(var(--safe-b) + 112px); }
+    .install:not([hidden]) ~ & { bottom: calc(var(--safe-b) + 150px); }
     display: flex; align-items: center; gap: 7px;
     padding: 13px 19px; border: 0; border-radius: 99px;
     background: var(--ink); color: var(--bg);

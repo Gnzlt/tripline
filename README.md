@@ -1,6 +1,6 @@
 # <img src="docs/logo.svg" alt="tripline" width="280">
 
-**Hand your bookings to your AI agent and get an offline trip timeline for your phone.**
+**Hand your bookings to your AI agent and get an offline trip app you can install on your phone.**
 
 <p>
   <img src="docs/timeline.png" width="200" alt="The timeline, showing what's happening right now">
@@ -9,8 +9,8 @@
   <img src="docs/driver.png" width="200" alt="A card in the local language to show a driver">
 </p>
 
-tripline turns your bookings into a small web app that opens instantly on your phone, even with
-no signal. It shows what's happening now and what's next, with a countdown. Tap any event for its
+tripline turns your bookings into a small app (a PWA) that you install from the browser
+onto your phone. It opens from your home screen, instantly, even with no signal. It shows what's happening now and what's next, with a countdown. Tap any event for its
 details:
 
 - addresses in the local script, ready to copy;
@@ -32,12 +32,12 @@ reads your bookings and builds the trip. [`AGENTS.md`](AGENTS.md) teaches it how
    > Read AGENTS.md, then build my trip from everything in bookings/.
 4. **Preview it** with `node tools/serve.mjs`. Add `?now=2027-04-09T07:00` to the URL to see any
    moment of the trip.
-5. **Deploy it** (below), add it to your home screen, and go.
+5. **Deploy it** (below), install it on your phone, and go.
 
 ## Features
 
-- **Offline and installable.** Everything is cached on the phone, and updates never interrupt
-  you.
+- **Installable and offline.** It's a PWA: install it once and it works like an app, with no
+  signal, no app store and no account. Updates never interrupt you.
 - **Now and next.** It shows the current event, the next one, a countdown, and the progress of
   the day and the trip.
 - **Local language.** Place names come in the local script, and the driver card goes fullscreen
@@ -54,6 +54,18 @@ There's no build step, no framework and no dependencies. The whole trip lives in
 [`public/data/trip.json`](public/data/trip.json), described by
 [`trip.schema.json`](trip.schema.json) and checked by `node tools/check.mjs`. The example trip
 is three days in Kansai.
+
+## Install it on your phone
+
+Open your trip's link on the phone, then:
+
+- **iPhone or iPad (Safari):** tap Share, then **Add to Home Screen**.
+- **Android (Chrome):** tap **Install** when the app offers it, or use the menu: **Install app**.
+- **Desktop (Chrome, Edge):** use the install icon in the address bar.
+
+The app offers this once by itself, and there's always an **Install as an app** button at the
+bottom of the timeline. Once installed, it opens from the home screen as an app, and it keeps
+working with no signal.
 
 ## Hosting
 

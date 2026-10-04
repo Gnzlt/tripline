@@ -59,6 +59,13 @@ const UI = {
   update: 'Update',
   updating: 'Updating…',
   later: 'Later',
+  installTitle: 'Keep this trip on your phone',
+  installText: 'Install it as an app: it opens from your home screen and works with no signal.',
+  installIos: 'Tap the Share button, then “Add to Home Screen”.',
+  installOther: 'Open your browser menu and choose “Install app” or “Add to Home screen”.',
+  install: 'Install',
+  installFoot: '📲 Install as an app',
+  notNow: 'Not now',
   checking: 'checking…',
   updateReady: 'update ready',
   ...TRIP.ui,
@@ -315,7 +322,8 @@ function renderChrome() {
   document.documentElement.lang = LOCALE;
   // The words in index.html, in the trip's language.
   for (const [id, key] of [['skip', 'skip'], ['statusTitle', 'loading'], ['updateTitle', 'updateTitle'],
-    ['updateText', 'updateText'], ['updateGo', 'update'], ['updateLater', 'later'], ['jumpLabel', 'jumpNow']]) {
+    ['updateText', 'updateText'], ['updateGo', 'update'], ['updateLater', 'later'], ['jumpLabel', 'jumpNow'],
+    ['installTitle', 'installTitle'], ['installGo', 'install'], ['installLater', 'notNow'], ['installFoot', 'installFoot']]) {
     const n = document.getElementById(id);
     if (n) n.textContent = UI[key];
   }
@@ -982,3 +990,58 @@ function showUpdate(reg) {
 }
 
 initUpdates();
+
+/* ── install ─────────────────────────────────────────────────────────────── */
+
+/**
+ * The app is a PWA: installed, it opens from the home screen like any other app and works
+ * with no signal. People rarely know that, so it is offered once, at the bottom like the
+ * update card, and stays in the footer. Chrome and Edge hand over a real install prompt;
+ * Safari on iPhone has none, so there the card says how. Installed, none of it shows.
+ */
+function initInstall() {
+  // The home-screen name, as the manifest gives it (Safari reads this meta).
+  fetch('manifest.webmanifest').then((r) => r.json()).then((m) => {
+    $('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content', m.short_name ?? m.name ?? TRIP.trip.title);
+  }).catch(() => {});
+
+  const installed = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  if (installed) return;
+
+  const card = $('#install'), go = $('#installGo'), text = $('#installText'), foot = $('#installFoot');
+  const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const KEY = 'tripline-install-offered';
+  let deferred = null;
+
+  const show = () => {
+    text.textContent = deferred ? UI.installText : ios ? UI.installIos : UI.installOther;
+    go.hidden = !deferred;
+    card.hidden = false;
+  };
+  // Once per device, and never on top of an update offer.
+  const offerOnce = () => {
+    try { if (localStorage.getItem(KEY)) return; localStorage.setItem(KEY, '1'); } catch { /* private mode */ }
+    if ($('#update').hidden) show();
+  };
+
+  foot.hidden = false;
+  foot.addEventListener('click', show);
+  $('#installLater').addEventListener('click', () => { card.hidden = true; });
+  go.addEventListener('click', async () => {
+    card.hidden = true;
+    deferred?.prompt();
+    await deferred?.userChoice;
+    deferred = null;
+  });
+
+  addEventListener('beforeinstallprompt', (ev) => {
+    ev.preventDefault();  // our card instead of the browser's mini-infobar
+    deferred = ev;
+    setTimeout(offerOnce, 4000);
+  });
+  addEventListener('appinstalled', () => { card.hidden = true; foot.hidden = true; });
+  // Safari never fires beforeinstallprompt: offer the instructions on its own.
+  if (ios) setTimeout(offerOnce, 4000);
+}
+
+initInstall();
