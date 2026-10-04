@@ -1,4 +1,4 @@
-# tripline
+# <img src="docs/logo.svg" alt="tripline" width="280">
 
 **Hand your bookings to your AI agent and get an offline trip timeline for your phone.**
 
