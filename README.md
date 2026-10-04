@@ -9,9 +9,9 @@
   <img src="docs/driver.png" width="200" alt="A card in the local language to show a driver">
 </p>
 
-**See it live:** [tokyo2027.lowly-lift-767.workers.dev](https://tokyo2027.lowly-lift-767.workers.dev/)
+**See it live:** [tokyo2027.tripline.workers.dev](https://tokyo2027.tripline.workers.dev/)
 is the example trip, Melbourne to Tokyo. Open it on your phone and install it. The trip is in
-2027, so add [`?now=2027-03-26T14:00`](https://tokyo2027.lowly-lift-767.workers.dev/?now=2027-03-26T14:00)
+2027, so add [`?now=2027-03-26T14:00`](https://tokyo2027.tripline.workers.dev/?now=2027-03-26T14:00)
 to see it mid-flight.
 
 tripline turns your bookings into a small app (a PWA) that you install from the browser
